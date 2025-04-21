@@ -114,7 +114,8 @@ h2 {
     height: 100vh;
     background: linear-gradient(rgba(0, 0, 0, 0.7), rgba(0, 0, 0, 0.7)),
                 url('images/out-2-5.webp');
-    background-size: 100%;
+    background-size: cover;
+    background-repeat: no-repeat;
     background-position: center;
     display: flex;
     align-items: flex-start;
@@ -281,6 +282,26 @@ footer {
 }
 
 @media (max-width: 768px) {
+    .coming-soon-container {
+        background-size: cover;
+        background-repeat: no-repeat;
+        background-position: center;
+        min-height: 100vh;
+    }
+    .brand-name {
+        font-size: 2.2rem !important;
+        top: -0.2em;
+    }
+    .brand-top {
+        font-size: 1.2rem !important;
+    }
+    h1 {
+        font-size: 2.2rem;
+    }
+    .content {
+        padding: 1.5rem 0.5rem;
+    }
+
     .nav-links {
         display: none;
     }
@@ -327,6 +348,26 @@ footer {
 }
 
 @media (max-width: 480px) {
+    .coming-soon-container {
+        background-size: cover;
+        background-repeat: no-repeat;
+        background-position: center;
+        min-height: 100vh;
+    }
+    .brand-name {
+        font-size: 1.4rem !important;
+        top: -0.1em;
+    }
+    .brand-top {
+        font-size: 1rem !important;
+    }
+    h1 {
+        font-size: 1.4rem;
+    }
+    .content {
+        padding: 0.5rem 0.2rem;
+    }
+
     .content {
         padding: 1.5rem;
     }
