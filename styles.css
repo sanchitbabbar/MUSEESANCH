@@ -1,0 +1,350 @@
+:root {
+    --primary-color: #2c3e50;
+    --secondary-color: #3498db;
+    --text-color: #333;
+    --background-color: #fff;
+}
+
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    font-family: 'Playfair Display', serif;
+    line-height: 1.6;
+    color: #f5f5f5;
+    overflow-x: hidden;
+}
+
+.brand-name {
+    font-family: 'Balgin', sans-serif !important;
+    font-size: 1.2em;
+    display: inline-block;
+    margin-left: 0.2em;
+    position: relative;
+    top: -0.5em;
+}
+
+.brand-top {
+    display: none;
+}
+
+header {
+    background-color: var(--primary-color);
+    color: white;
+    padding: 1rem;
+}
+
+nav {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    max-width: 1200px;
+    margin: 0 auto;
+}
+
+.logo {
+    font-size: 1.5rem;
+    font-weight: bold;
+}
+
+.nav-links {
+    display: flex;
+    list-style: none;
+    gap: 2rem;
+}
+
+.nav-links a {
+    color: white;
+    text-decoration: none;
+    transition: color 0.3s ease;
+}
+
+.nav-links a:hover {
+    color: var(--secondary-color);
+}
+
+main {
+    max-width: 1200px;
+    margin: 2rem auto;
+    padding: 0 1rem;
+}
+
+section {
+    margin-bottom: 3rem;
+}
+
+.hero {
+    text-align: center;
+    padding: 4rem 0;
+}
+
+h1 {
+    font-family: 'Playfair Display', serif;
+    font-size: 2.52rem;
+    font-weight: 700;
+    margin-bottom: 1rem;
+    letter-spacing: 0.14em;
+    color: #f5f5f5;
+    text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.3);
+    position: relative;
+}
+
+h2 {
+    font-family: 'Montserrat', sans-serif;
+    font-size: 1.4rem;
+    font-weight: 400;
+    margin-bottom: 2rem;
+    letter-spacing: 0.05em;
+    color: rgba(255, 255, 255, 0.8);
+    text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.1);
+    text-transform: uppercase;
+    opacity: 0.9;
+    text-align: center;
+}
+
+.coming-soon {
+    display: none;
+}
+
+.coming-soon-container {
+    width: 100%;
+    height: 100vh;
+    background: linear-gradient(rgba(0, 0, 0, 0.7), rgba(0, 0, 0, 0.7)),
+                url('images/out-2-5.webp');
+    background-size: 100%;
+    background-position: center;
+    display: flex;
+    align-items: flex-start;
+    justify-content: center;
+    padding-top: 5vh;
+}
+
+.overlay {
+    width: 100%;
+    height: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.content {
+    text-align: center;
+    padding: 0;
+}
+
+p {
+    font-size: 1.3rem;
+    margin-bottom: 3rem;
+    opacity: 0.9;
+    color: #f5f5f5;
+    text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.3);
+}
+
+.countdown {
+    display: flex;
+    justify-content: center;
+    gap: 2rem;
+    margin-bottom: 3rem;
+}
+
+.countdown-item {
+    background: rgba(255, 255, 255, 0.1);
+    padding: 1.5rem;
+    border-radius: 10px;
+    width: 100px;
+    text-align: center;
+}
+
+.countdown-item span:first-child {
+    font-size: 2.8rem;
+    font-weight: 700;
+    display: block;
+    margin-bottom: 0.5rem;
+    color: #f5f5f5;
+    text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.3);
+}
+
+.countdown-item span:last-child {
+    font-size: 1.2rem;
+    opacity: 0.8;
+    color: #f5f5f5;
+    text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.3);
+}
+
+.subscribe {
+    display: flex;
+    gap: 1rem;
+    max-width: 600px;
+    margin: 0 auto;
+}
+
+.subscribe input {
+    flex: 5;
+    padding: 1rem;
+    border: none;
+    border-radius: 5px;
+    font-size: 1rem;
+    font-family: 'Montserrat', sans-serif;
+    font-weight: 500;
+    background: rgba(255, 255, 255, 0.1);
+    color: #f5f5f5;
+    text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.3);
+    transition: background-color 0.3s ease;
+}
+
+.subscribe button {
+    padding: 1rem 2rem;
+    border: none;
+    border-radius: 5px;
+    font-size: 1rem;
+    font-family: 'Montserrat', sans-serif;
+    font-weight: 400;
+    background: linear-gradient(135deg, #fff 0%, #f8f8f8 100%);
+    color: #333;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    cursor: pointer;
+    transition: all 0.3s ease;
+}
+
+.subscribe button:hover {
+    background: #e6e6e6;
+}
+
+.subscribe button:active {
+    transform: translateY(2px);
+}
+
+.subscribe input:focus {
+    outline: none;
+    background: rgba(255, 255, 255, 0.2);
+}
+
+.fashion-display {
+    display: none;
+}
+
+.display-item {
+    display: none;
+}
+
+.display-icon {
+    display: none;
+}
+
+.display-text {
+    display: none;
+}
+
+footer {
+    background-color: var(--primary-color);
+    color: white;
+    text-align: center;
+    padding: 1rem;
+    position: fixed;
+    bottom: 0;
+    width: 100%;
+}
+
+@media (min-width: 1200px) {
+    .content {
+        max-width: 1000px;
+        padding: 4rem;
+    }
+    
+    h1 {
+        font-size: 5rem;
+    }
+    
+    .countdown {
+        max-width: 800px;
+    }
+}
+
+@media (max-width: 1024px) {
+    .content {
+        padding: 3rem;
+        max-width: 90%;
+    }
+
+    h1 {
+        font-size: 4rem;
+    }
+
+    .countdown {
+        max-width: 90%;
+        margin: 2rem auto;
+    }
+}
+
+@media (max-width: 768px) {
+    .nav-links {
+        display: none;
+    }
+    
+    main {
+        padding: 0 0.5rem;
+    }
+    
+    h1 {
+        font-size: 3rem;
+    }
+    
+    h2 {
+        font-size: 1.5rem;
+    }
+    
+    .countdown {
+        flex-wrap: wrap;
+        gap: 1rem;
+    }
+    
+    .countdown-item {
+        flex: 1 0 40%;
+        margin-bottom: 1rem;
+    }
+    
+    .subscribe {
+        flex-direction: column;
+    }
+    
+    form#emailForm {
+        flex-direction: column !important;
+        gap: 1rem;
+    }
+    
+    .subscribe input,
+    .subscribe button {
+        width: 100% !important;
+    }
+    
+    .coming-soon {
+        font-size: 1.5rem;
+    }
+}
+
+@media (max-width: 480px) {
+    .content {
+        padding: 1.5rem;
+    }
+
+    h1 {
+        font-size: 2.5rem;
+    }
+
+    h2 {
+        font-size: 1.2rem;
+        margin-bottom: 1.5rem;
+    }
+
+    .countdown-item span:first-child {
+        font-size: 2rem;
+    }
+    
+    .countdown-item span:last-child {
+        font-size: 0.8rem;
+    }
+}
