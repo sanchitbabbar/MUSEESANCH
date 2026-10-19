@@ -18,3 +18,8 @@ node_modules/
 *.zip
 cloudflare-deploy/
 .DS_Store
+
+# Private subscriber data and credential documents
+emails.txt
+*.pages
+.env.*
