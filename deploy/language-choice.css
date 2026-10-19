@@ -1,3 +1,19 @@
  .language-choice{padding:0;border:1px solid rgba(255,255,255,.12);background:linear-gradient(130deg,rgba(8,8,8,.94),rgba(18,18,18,.88));color:#eee;width:min(440px,calc(100% - 40px));box-shadow:0 28px 90px #0008;backdrop-filter:blur(22px)}.language-choice::backdrop{background:#0009;backdrop-filter:blur(10px)}.language-choice-inner{text-align:center;padding:48px 28px}.language-brand{font-family:Balgin,serif!important;font-size:13px!important;letter-spacing:.08em;margin:0 0 40px!important;color:#eee!important}.language-choice h2{font-family:Montserrat,sans-serif;font-size:12px!important;font-weight:300;letter-spacing:.12em;text-transform:none;margin:0!important;line-height:1.8}.language-choice h2 span{display:block;font-size:10px;color:#ffffff70;letter-spacing:.08em;margin-top:6px}.language-options{display:flex;justify-content:center;align-items:center;gap:26px;margin-top:32px}.language-options>span{color:#ffffff30;font-size:12px}.language-options button{background:none;border:0;border-bottom:1px solid transparent;color:#ddd;font-family:Montserrat,sans-serif;font-size:12px;font-weight:300;letter-spacing:.08em;padding:12px 0;cursor:pointer}.language-options button:hover{border-color:#ffffff70;color:white}.language-options button:focus-visible{outline:1px solid #aaa;outline-offset:5px}.language-reopen{position:fixed;left:20px;bottom:16px;z-index:9998;background:none;border:0;color:#ffffff65;font-family:Montserrat,sans-serif;font-size:8px;letter-spacing:.15em;padding:5px;cursor:pointer}.language-reopen:hover{color:#eee}
 
 .language-choice{margin:auto;max-height:calc(100dvh - 40px);overflow:auto}
+
+/* Quiet glass invitation: let the museum remain visible behind it. */
+.language-choice{background:linear-gradient(130deg,rgba(8,8,8,.56),rgba(18,18,18,.42));border-color:rgba(255,255,255,.065);box-shadow:0 16px 60px rgba(0,0,0,.14);backdrop-filter:blur(7px);-webkit-backdrop-filter:blur(7px)}
+.language-choice::backdrop{background:rgba(0,0,0,.22);backdrop-filter:blur(3px);-webkit-backdrop-filter:blur(3px)}
+.language-choice-inner{padding:38px 24px}
+.language-brand{font-size:11px!important;color:rgba(255,255,255,.78)!important;margin-bottom:30px!important}
+.language-choice h2{font-size:11px!important;letter-spacing:.1em;color:rgba(255,255,255,.72)}
+.language-choice h2 span{font-size:9px;color:rgba(255,255,255,.38);margin-top:5px}
+.language-options{margin-top:24px;gap:24px}
+.language-options button{font-size:11px;color:rgba(255,255,255,.72);font-weight:300}
+.language-options>span{color:rgba(255,255,255,.18)}
+
+.language-choice{border-radius:22px;background-clip:padding-box;overflow:hidden}
+.language-options button{border:0;outline:none;box-shadow:none;transition:color .55s ease,text-shadow .55s ease}
+.language-options button:hover,.language-options button:focus-visible{border:0;outline:none;box-shadow:none;color:rgba(255,255,255,.98);text-shadow:0 0 8px rgba(255,255,255,.4),0 0 18px rgba(255,255,255,.16)}
+@media(prefers-reduced-motion:reduce){.language-options button{transition:none}}
