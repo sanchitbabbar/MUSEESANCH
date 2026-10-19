@@ -6,3 +6,27 @@
 #send-request{width:100%;background:transparent;border:0;padding:14px 4px;color:#ffffff70;font-size:10px;letter-spacing:.25em}#request-note{font-size:10px;color:#ffffff66}
 
 #send-request{cursor:pointer;color:#ffffffcc}#send-request:disabled{opacity:.4;cursor:wait}.request-privacy{font-size:10px!important;line-height:1.8}.request-privacy a{text-decoration:underline;text-underline-offset:3px}
+
+/* SANCH request controls: fine text and a moving light, without button chrome. */
+#open-request,#send-request{appearance:none;-webkit-appearance:none;position:relative;display:block;width:100%;border:0;border-radius:0;outline:none;box-shadow:none;background:transparent;padding:14px 4px;margin-top:16px;color:rgba(255,255,255,.8);font-family:Montserrat,sans-serif;font-weight:300;font-size:10px;line-height:1.6;letter-spacing:.25em;text-transform:uppercase;text-align:center;overflow:hidden;-webkit-tap-highlight-color:transparent;transition:color .3s ease}
+#open-request:focus,#open-request:focus-visible,#send-request:focus,#send-request:focus-visible{border:0;outline:none;box-shadow:none}
+#open-request::after,#send-request::after{content:"";position:absolute;bottom:0;left:0;width:100%;height:1px;background:linear-gradient(90deg,transparent,rgba(255,255,255,.9),transparent);opacity:0;transform:translateX(-110%);pointer-events:none}
+#open-request:hover,#open-request:focus-visible,#send-request:hover,#send-request:focus-visible{color:#fff}
+#open-request:hover::after,#open-request:focus-visible::after,#send-request:hover::after,#send-request:focus-visible::after{opacity:.7;animation:musee-request-light 2s ease-in-out infinite}
+#open-request[hidden]{display:none}#send-request:disabled{opacity:.4;cursor:wait}
+@keyframes musee-request-light{to{transform:translateX(110%)}}
+
+
+#open-request::after,#send-request::after{width:24%;height:1px;left:0;background:linear-gradient(90deg,transparent,rgba(255,255,255,.22) 30%,rgba(255,255,255,.85) 65%,transparent);box-shadow:0 0 6px rgba(255,255,255,.16);transform:translateX(-110%)}
+#open-request:hover::after,#open-request:focus-visible::after,#send-request:hover::after,#send-request:focus-visible::after{animation:musee-request-slow-beam 5.5s linear infinite}
+@keyframes musee-request-slow-beam{0%{transform:translateX(-110%);opacity:0}12%{opacity:.65}85%{opacity:.65}100%{transform:translateX(440%);opacity:0}}
+
+
+#open-request::after,#send-request::after,#open-request:hover::after,#open-request:focus-visible::after,#send-request:hover::after,#send-request:focus-visible::after{width:24%;animation:musee-request-slow-beam 5.5s linear infinite;will-change:transform;opacity:.65}
+
+.detail-copy .artwork-purchase-notes{margin-top:24px}.detail-copy .artwork-purchase-notes p{font-size:11px;line-height:1.65;font-weight:300;text-align:center;color:rgba(255,255,255,.4);margin:0 0 16px}.detail-copy .artwork-purchase-notes p:nth-child(n+3){font-style:italic}
+
+.detail-copy .artwork-purchase-notes p{font-style:normal!important;text-align:left}.detail-copy .artwork-purchase-notes p:nth-child(4){font-weight:500}
+
+#open-request::after,#send-request::after{animation:none;opacity:0;transform:translateX(-110%)}
+#open-request:hover::after,#open-request:focus-visible::after,#send-request:hover::after,#send-request:focus-visible::after{animation:musee-request-slow-beam 5.5s linear infinite;opacity:.65}
