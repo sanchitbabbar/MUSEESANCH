@@ -13,9 +13,9 @@ for (const [index, work] of designs.entries()) {
  card.addEventListener('click', () => {
   returnTo=card; const image=document.getElementById('detail-image'); image.src='.'+work.image; image.alt=work.title; image.classList.remove('framed'); image.closest('.image-panel').classList.remove('is-framed'); document.getElementById('artwork-toggle').setAttribute('aria-pressed','true');
   document.getElementById('detail-title').textContent=work.title;
-  document.getElementById('detail-description').textContent=work.descriptionFr;
-  document.getElementById('detail-year').textContent=work.year+' · Édition limitée · '+work.availablePieces+' exemplaire'+(work.availablePieces>1?'s':'')+' disponible'+(work.availablePieces>1?'s':'');
-  document.getElementById('detail-price').textContent='À partir de €'+work.basePrice;
+  document.getElementById('detail-description').textContent=(language==='fr'?work.descriptionFr:work.descriptionEn);
+  document.getElementById('detail-year').textContent=work.year+(language==='fr'?' · Édition limitée · ':' · Limited edition · ')+work.availablePieces+(language==='fr'?' exemplaire(s) disponible(s)':' pieces available');
+  document.getElementById('detail-price').textContent=(language==='fr'?'À partir de €':'From €')+work.basePrice;
   document.getElementById('detail-sizes').textContent=work.sizes.map(size=>size.dimensions).join(' · ');
   document.getElementById('frame-toggle').setAttribute('aria-pressed','false');
   dialog.showModal(); document.body.style.overflow='hidden';
@@ -33,3 +33,39 @@ function setFramed(active) {
 }
 document.getElementById('frame-toggle').addEventListener('click',()=>setFramed(true));
 document.getElementById('artwork-toggle').addEventListener('click',()=>setFramed(false));
+
+const aboutContent={"en": {"approach": ["Through his art, Sanchit explores the dimensions of masculine and feminine beyond social conventions and gender assignments. His work questions identity constructs and the freedom to exist outside societal frameworks. Guided by a vision where the heart takes precedence over labels, he invites us to perceive the world not through rigid cultural filters, but from a space of sensitivity and purity. Inspired by his journey around the globe, he questions how human beings define themselves and interact, proposing an approach where the individual, in their entirety, becomes the expression of a culture in motion.", "His creative process relies on the body as the primary medium, a space where masculine and feminine energies intertwine. Classical dance, movement, and the activation of the senses are at the heart of his practice, allowing him to feel, transcribe, and bring his sensations to life. Each gesture, each line drawn on paper becomes an extension of this search for harmony, where visual art and movement blend in the expression of intimacy and sensuality. This exploration enables him to transform his heartfelt expressions into a living work of art in constant evolution.", "Through his art, Sanchit invites the audience to move beyond traditional frameworks and reconnect with a more fluid perception of ideologies. He shares a vision where feminine energy, essential to the experience of beauty and sensitivity, transcends gender and cultural expectations. His work encourages seeing bodies not as gendered entities, but as reflections of our own inner perceptions. The viewer is thus led to question their filters, to open themselves to a new reading of the living, and to explore their own capacity to welcome others from a space of heart rather than social conditioning."], "collection": ["Each piece in this exclusive collection is drawn from Sanchit Babbar's original creations. Limited to only 5 copies per design, these art prints are produced on the highest quality papers with archival inks guaranteeing exceptional longevity.", "A certificate of authenticity signed by the artist accompanies each print, attesting to its origin and rarity. The works are delivered unframed, allowing you to choose the frame that will best harmonize with your interior."]}, "fr": {"approach": ["Sanchit Babbar explore, à travers son art, les dimensions du masculin et du féminin au-delà des conventions sociales et des assignations de genre. Son travail interroge les constructions identitaires et la liberté d'être en dehors des cadres imposés par la société. Porté par une vision où le cœur prime sur les étiquettes, il invite à percevoir le monde non plus à travers des filtres culturels rigides, mais à partir d'un espace de sensibilité et pureté. Inspiré par son parcours entre l'Inde et le monde, il questionne la manière dont les êtres humains se définissent et interagissent, proposant une approche où l'individu, dans sa totalité, devient l'expression d'une culture en mouvement.", "Son processus de création s'appuie sur le corps comme médium principal, un espace où s'entrelacent énergies masculines et féminines. La danse classique, le mouvement et l'activation des sens sont au cœur de sa pratique, lui permettant de ressentir, de transcrire et de donner vie à son ressenti. Chaque geste, chaque trait de crayon sur le papier devient une extension de cette recherche d'harmonie, où l'art visuel et le mouvement s'harmonisent dans l'expression de l'intimité et de la sensualité. Cette exploration lui permet de transformer son corps en une œuvre vivante, en constante évolution.", "À travers son art, Sanchit Babbar invite le public à dépasser les cadres traditionnels et à se reconnecter à une perception plus fluide de l'identité. Il partage une vision où l'énergie féminine, essentielle à l'expérience de la beauté et de la sensibilité, transcende les genres et les attentes culturelles. Son œuvre incite à voir les corps non pas comme des entités genrées, mais comme des reflets de nos propres perceptions intérieures. Le spectateur est ainsi amené à questionner ses filtres, à s'ouvrir à une nouvelle lecture du vivant et à explorer sa propre capacité à accueillir l'autre depuis un espace de cœur plutôt que de conditionnement social."], "collection": ["Chaque œuvre de cette collection exclusive est tirée des créations originales de Sanchit Babbar. Limitée à seulement 5 exemplaires par design, ces impressions d'art sont produites sur des papiers de la plus haute qualité avec des encres archivistiques garantissant une longévité exceptionnelle.", "Un certificat d'authenticité signé par l'artiste accompagne chaque tirage, attestant de son origine et de sa rareté. Les œuvres sont livrées non encadrées, vous permettant de choisir le cadre qui s'harmonisera le mieux avec votre intérieur."]}};
+let language='fr', activeTab='works';
+function renderAbout(){
+ const section=document.getElementById('about-gallery');section.replaceChildren();
+ for(const [key,title] of [['approach',language==='fr'?'Démarche artistique':'Artistic Approach'],['collection',language==='fr'?'La Collection':'The Collection']]){
+ const h=document.createElement('h2');h.textContent=title;section.append(h);
+ for(const text of aboutContent[language][key]){const p=document.createElement('p');p.textContent=text;section.append(p);}
+ }
+}
+function updateLanguage(){
+ const fr=language==='fr';document.documentElement.lang=language;
+ document.querySelector('header h1').textContent=fr?'Œuvres d’art':'Artworks';
+ document.querySelector('.edition').lastChild.textContent=fr?'ÉDITION LIMITÉE • 5 ŒUVRES':'LIMITED EDITION • 5 PIECES';
+ document.getElementById('works-tab').textContent=fr?'ŒUVRES':'WORKS';
+ document.getElementById('about-tab').textContent=fr?'À PROPOS':'ABOUT';
+ document.querySelectorAll('[data-language]').forEach(b=>b.setAttribute('aria-pressed',String(b.dataset.language===language)));
+ document.querySelectorAll('.artwork-card').forEach((card,i)=>{
+ card.querySelector('.artwork-meta span').textContent=(fr?'Œuvre d’art, ':'Artwork, ')+designs[i].year;
+ card.querySelector('.artwork-meta span:last-child').textContent=(fr?'À partir de €':'From €')+designs[i].basePrice;
+ });
+ document.getElementById('artwork-toggle').setAttribute('aria-label',fr?'Voir l’œuvre seule':'View artwork only');
+ document.getElementById('frame-toggle').setAttribute('aria-label',fr?'Voir l’œuvre encadrée':'View framed artwork');
+ document.getElementById('close-detail').setAttribute('aria-label',fr?'Fermer les détails':'Close details');
+ document.querySelector('.detail-copy .label').textContent=fr?'FORMATS':'SIZES';
+ document.querySelector('.material').textContent=fr?'Papier d’art Hahnemühle · Tirage signé et numéroté · Certificat d’authenticité':'Hahnemühle fine art paper · Signed and numbered print · Certificate of authenticity';
+ document.querySelector('.collection-link').textContent=fr?'Acquérir une œuvre chez Studio Sanch ↗':'Acquire an artwork at Studio Sanch ↗';
+ renderAbout();
+}
+for(const button of document.querySelectorAll('[data-language]'))button.addEventListener('click',()=>{language=button.dataset.language;updateLanguage();});
+function setTab(tab){activeTab=tab;grid.hidden=tab!=='works';document.getElementById('about-gallery').hidden=tab!=='about';
+ for(const name of ['works','about'])document.getElementById(name+'-tab').setAttribute('aria-selected',String(name===tab));}
+document.getElementById('works-tab').addEventListener('click',()=>setTab('works'));
+document.getElementById('about-tab').addEventListener('click',()=>setTab('about'));
+document.querySelector('header .back').addEventListener('click',e=>{if(activeTab==='about'){e.preventDefault();setTab('works');}});
+updateLanguage();

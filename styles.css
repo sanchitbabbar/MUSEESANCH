@@ -19,3 +19,31 @@ h2{font-size:clamp(28px,5vw,42px);font-weight:400;line-height:1.3;letter-spacing
 .brand-top{font-family:Balgin,serif;font-size:8px;font-weight:400;letter-spacing:.18em;margin-bottom:14px}
 
 .logo-acute{position:relative;display:inline-block}.logo-acute::after{content:"";position:absolute;width:.28em;height:.075em;background:currentColor;left:42%;top:-.18em;transform:rotate(-50deg);transform-origin:center}
+
+.museum-entry{position:relative;border-bottom:0;gap:0}
+.museum-entry::after{content:"";position:absolute;left:0;right:0;bottom:0;height:1px;background:linear-gradient(90deg,transparent 0%,rgba(255,255,255,.25) 20%,rgba(255,255,255,.95) 50%,rgba(255,255,255,.25) 80%,transparent 100%);box-shadow:0 0 5px rgba(255,255,255,.3),0 0 12px rgba(255,255,255,.12);opacity:0;transform:scaleX(.35);transition:opacity .65s ease,transform .85s cubic-bezier(.22,1,.36,1);pointer-events:none}
+.museum-entry:hover::after,.museum-entry:focus-visible::after{opacity:1;transform:scaleX(1)}
+@media(prefers-reduced-motion:reduce){.museum-entry::after{transition:none}}
+
+/* A narrow beam travels beneath the invitation while hovered or focused. */
+.museum-entry{overflow:hidden}
+.museum-entry::after{left:0;right:auto;width:38%;transform:translateX(-110%);background:linear-gradient(90deg,transparent,rgba(255,255,255,.35) 35%,#fff 70%,transparent);transition:opacity .3s ease}
+.museum-entry:hover::after,.museum-entry:focus-visible::after{opacity:1;animation:invitation-beam 2.4s cubic-bezier(.4,0,.2,1) infinite}
+@keyframes invitation-beam{0%{transform:translateX(-110%);opacity:0}15%{opacity:.85}75%{opacity:.85}100%{transform:translateX(365%);opacity:0}}
+@media(prefers-reduced-motion:reduce){.museum-entry:hover::after,.museum-entry:focus-visible::after{animation:none;transform:none;width:100%;opacity:.7}}
+
+.eyebrow.ode{font-family:"Playfair Display",serif;text-transform:none;letter-spacing:.02em;font-size:clamp(14px,2vw,17px);line-height:1.9;max-width:520px;margin:0 auto 24px;text-wrap:pretty}.ode strong{font-weight:600}
+
+/* Fine, restrained typography matching the SANCH sites. */
+.eyebrow.ode{font-family:Montserrat,sans-serif;font-style:normal;font-weight:300;text-transform:uppercase;font-size:clamp(10px,1.1vw,12px);line-height:1.8;letter-spacing:.24em;max-width:100%;margin:0 auto 22px;color:rgba(255,255,255,.85)}
+.intro{font-family:Montserrat,sans-serif;font-weight:300;font-style:normal;font-size:clamp(11px,1.2vw,13px);line-height:2.1;letter-spacing:.035em;max-width:440px;margin:0 auto 36px;color:rgba(255,255,255,.65);text-wrap:pretty}
+@media(max-width:480px){.eyebrow.ode{font-size:10px;letter-spacing:.16em}.intro{max-width:290px;font-size:11px;line-height:2}}
+
+/* Shared museum footer on the entrance page. */
+footer{background:#050505;text-align:center;padding:80px 24px;color:#999;font-family:Montserrat,sans-serif;font-weight:300;font-size:9px;letter-spacing:.15em}
+footer p{font-family:inherit;font-size:inherit;line-height:1.6;margin:20px 0;color:inherit}
+footer nav{display:flex;justify-content:center;flex-wrap:wrap;gap:20px;font-size:8px}
+footer a{color:inherit;text-decoration:none}footer a:hover{color:#eee}
+footer .mda-stamp{display:block;width:268px;max-width:80vw;height:auto;margin:24px auto;clip-path:inset(22% 4%)}
+
+footer .footer-logo{font-family:Balgin,serif;font-weight:400;font-size:10px;letter-spacing:.08em}
