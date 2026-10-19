@@ -69,3 +69,5 @@ document.getElementById('works-tab').addEventListener('click',()=>setTab('works'
 document.getElementById('about-tab').addEventListener('click',()=>setTab('about'));
 document.querySelector('header .back').addEventListener('click',e=>{if(activeTab==='about'){e.preventDefault();setTab('works');}});
 updateLanguage();
+
+window.addEventListener("musee:language",event=>{if(event.detail==="en"||event.detail==="fr"){language=event.detail;updateLanguage();}});

@@ -8,8 +8,14 @@ app.use((req, res, next) => {
     res.set('Referrer-Policy', 'strict-origin-when-cross-origin');
     next();
 });
+// Cloudflare supplies the country in production; unknown/local requests default to English.
+app.get('/api/visitor-language.php', (req,res) => {
+ const country=String(req.get('CF-IPCountry') || '').trim().toUpperCase();
+ res.set('Cache-Control','private, no-store').set('Vary','CF-IPCountry');
+ res.json({language:country==='FR'?'fr':'en'});
+});
 app.get(['/', '/index.html'], (req, res) => res.sendFile(path.join(__dirname, 'index.html')));
-for (const file of ['styles.css', 'fonts.css', 'script.js', 'newsletter-handler.js', 'artworks.html', 'gallery.js', 'gallery.css', 'legal-notice.html', 'legal-notice-en.html', 'legal.css', 'cookie-consent.js', 'cookie-consent.css', 'privacy-policy.html', 'privacy-policy-en.html', 'terms.html', 'terms-en.html']) {
+for (const file of ['styles.css', 'fonts.css', 'script.js', 'newsletter-handler.js', 'artworks.html', 'gallery.js', 'gallery.css', 'legal-notice.html', 'legal-notice-en.html', 'legal.css', 'language-choice.js', 'language-choice.css', 'cookie-consent.js', 'cookie-consent.css', 'privacy-policy.html', 'privacy-policy-en.html', 'terms.html', 'terms-en.html']) {
     app.get('/' + file, (req, res) => res.sendFile(path.join(__dirname, file)));
 }
 for (const directory of ['images', 'fonts']) {

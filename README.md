@@ -14,3 +14,13 @@ The previous Formspree handler is retained but is no longer loaded on the entran
 The local server binds only to localhost and serves only public site assets.
 Legacy /api/subscribe and /api/emails return 410. Private files are not served.
 Publish only the public deployment files, never the entire repository.
+
+
+## Country-based language
+Explicit stored language wins. Otherwise FR country = French, all other or unknown
+countries = English. The first-visit language chooser remains available.
+SiteGround serves api/visitor-language.php using Cloudflare's CF-IPCountry header.
+Enable IP Geolocation and proxy museesanch.com through Cloudflare for that header.
+Cloudflare Pages instead uses functions/api/visitor-language.php.js and request.cf.country.
+Both endpoint variants return only the language and disable caching. Local preview
+has no country information and defaults to English. Browser language is not used.
