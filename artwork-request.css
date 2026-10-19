@@ -1,0 +1,8 @@
+
+.collection-link{background:transparent;color:#ffffffcc;cursor:pointer;font-weight:300}
+#request-preview{margin-top:28px;border-top:1px solid #ffffff1a;padding-top:24px}#request-preview h3{font-size:18px;font-weight:300;letter-spacing:.06em}
+#request-form label{display:flex;flex-direction:column;border-bottom:1px solid #ffffff1a;padding:12px 0;margin:0 0 20px}#request-form label span{color:#ffffff66;font-size:10px;letter-spacing:.2em;margin-bottom:8px}
+#request-form input,#request-form textarea{font:300 12px/1.8 Montserrat,sans-serif;letter-spacing:.05em;color:#ffffffe6;background:transparent;border:0;border-radius:0;width:100%;padding:4px 0;resize:vertical;outline:none}#request-form label:focus-within{border-color:#ffffff70}
+#send-request{width:100%;background:transparent;border:0;padding:14px 4px;color:#ffffff70;font-size:10px;letter-spacing:.25em}#request-note{font-size:10px;color:#ffffff66}
+
+#send-request{cursor:pointer;color:#ffffffcc}#send-request:disabled{opacity:.4;cursor:wait}.request-privacy{font-size:10px!important;line-height:1.8}.request-privacy a{text-decoration:underline;text-underline-offset:3px}

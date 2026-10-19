@@ -11,7 +11,7 @@ for (const [index, work] of designs.entries()) {
  const price = document.createElement('span'); price.textContent = 'À partir de €' + work.basePrice;
  meta.append(year, price); card.append(img,title,meta); grid.append(card);
  card.addEventListener('click', () => {
-  returnTo=card; const image=document.getElementById('detail-image'); image.src='.'+work.image; image.alt=work.title; image.classList.remove('framed'); image.closest('.image-panel').classList.remove('is-framed'); document.getElementById('artwork-toggle').setAttribute('aria-pressed','true');
+  window.dispatchEvent(new CustomEvent('musee:artwork-selected',{detail:work}));returnTo=card; const image=document.getElementById('detail-image'); image.src='.'+work.image; image.alt=work.title; image.classList.remove('framed'); image.closest('.image-panel').classList.remove('is-framed'); document.getElementById('artwork-toggle').setAttribute('aria-pressed','true');
   document.getElementById('detail-title').textContent=work.title;
   document.getElementById('detail-description').textContent=(language==='fr'?work.descriptionFr:work.descriptionEn);
   document.getElementById('detail-year').textContent=work.year+(language==='fr'?' · Édition limitée · ':' · Limited edition · ')+work.availablePieces+(language==='fr'?' exemplaire(s) disponible(s)':' pieces available');
@@ -59,7 +59,7 @@ function updateLanguage(){
  document.getElementById('close-detail').setAttribute('aria-label',fr?'Fermer les détails':'Close details');
  document.querySelector('.detail-copy .label').textContent=fr?'FORMATS':'SIZES';
  document.querySelector('.material').textContent=fr?'Papier d’art Hahnemühle · Tirage signé et numéroté · Certificat d’authenticité':'Hahnemühle fine art paper · Signed and numbered print · Certificate of authenticity';
- document.querySelector('.collection-link').textContent=fr?'Acquérir une œuvre chez Studio Sanch ↗':'Acquire an artwork at Studio Sanch ↗';
+ document.querySelector('.collection-link').textContent=fr?'Formuler une demande':'Place a request';
  renderAbout();
 }
 for(const button of document.querySelectorAll('[data-language]'))button.addEventListener('click',()=>{language=button.dataset.language;updateLanguage();});

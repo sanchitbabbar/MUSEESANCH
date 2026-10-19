@@ -41,3 +41,5 @@ header{grid-template-columns:minmax(0,1fr) auto auto}
 footer .footer-logo{font-family:Balgin,serif;font-weight:400;font-size:10px;letter-spacing:.08em}
 
 footer .footer-logo{color:#eee}
+
+.view-controls button,.view-controls button:focus,.view-controls button:focus-visible{outline:none;border:0;box-shadow:none;-webkit-tap-highlight-color:transparent}.view-controls button:hover span,.view-controls button:focus-visible span{box-shadow:0 0 6px rgba(255,255,255,.5);width:32px}.is-framed .view-controls button:hover span,.is-framed .view-controls button:focus-visible span{box-shadow:0 0 5px rgba(0,0,0,.3)}
