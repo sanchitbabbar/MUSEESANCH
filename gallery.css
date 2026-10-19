@@ -39,3 +39,5 @@ header{grid-template-columns:minmax(0,1fr) auto auto}
 .mda-stamp{display:block;width:268px;max-width:80vw;height:auto;margin:24px auto;clip-path:inset(22% 4%)}
 
 footer .footer-logo{font-family:Balgin,serif;font-weight:400;font-size:10px;letter-spacing:.08em}
+
+footer .footer-logo{color:#eee}

@@ -9,7 +9,7 @@ app.use((req, res, next) => {
     next();
 });
 app.get(['/', '/index.html'], (req, res) => res.sendFile(path.join(__dirname, 'index.html')));
-for (const file of ['styles.css', 'fonts.css', 'script.js', 'newsletter-handler.js', 'artworks.html', 'gallery.js', 'gallery.css', 'legal-notice.html', 'legal-notice-en.html']) {
+for (const file of ['styles.css', 'fonts.css', 'script.js', 'newsletter-handler.js', 'artworks.html', 'gallery.js', 'gallery.css', 'legal-notice.html', 'legal-notice-en.html', 'legal.css', 'privacy-policy.html', 'privacy-policy-en.html', 'terms.html', 'terms-en.html']) {
     app.get('/' + file, (req, res) => res.sendFile(path.join(__dirname, file)));
 }
 for (const directory of ['images', 'fonts']) {
