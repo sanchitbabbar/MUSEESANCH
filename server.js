@@ -15,7 +15,7 @@ app.get('/api/visitor-language.php', (req,res) => {
  res.json({language:country==='FR'?'fr':'en'});
 });
 app.get(['/', '/index.html'], (req, res) => res.sendFile(path.join(__dirname, 'index.html')));
-for (const file of ['styles.css', 'fonts.css', 'script.js', 'newsletter-handler.js', 'artworks.html', 'gallery.js', 'gallery.css', 'legal-notice.html', 'legal-notice-en.html', 'legal.css', 'language-choice.js', 'language-choice.css', 'cookie-consent.js', 'cookie-consent.css', 'privacy-policy.html', 'privacy-policy-en.html', 'terms.html', 'terms-en.html']) {
+for (const file of ['styles.css', 'fonts.css', 'script.js', 'newsletter-handler.js', 'artworks.html', 'gallery.js', 'gallery.css', 'collection-intro.css', 'collection-intro.js', 'legal-notice.html', 'legal-notice-en.html', 'legal.css', 'language-choice.js', 'language-choice.css', 'cookie-consent.js', 'cookie-consent.css', 'privacy-policy.html', 'privacy-policy-en.html', 'terms.html', 'terms-en.html']) {
     app.get('/' + file, (req, res) => res.sendFile(path.join(__dirname, file)));
 }
 for (const directory of ['images', 'fonts']) {
