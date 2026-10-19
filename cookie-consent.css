@@ -1,0 +1,22 @@
+.musee-cookie-banner {
+  position: fixed; z-index: 10000; right: 0; bottom: 0; left: 0;
+  color: rgba(255,255,255,.78); background: linear-gradient(112deg, rgba(7,7,7,.58), rgba(12,12,12,.42));
+  border-top: 1px solid rgba(255,255,255,.1); box-shadow: 0 -16px 54px rgba(0,0,0,.22), inset 0 1px rgba(255,255,255,.025);
+  backdrop-filter: blur(18px) saturate(108%); -webkit-backdrop-filter: blur(18px) saturate(108%);
+}
+.musee-cookie-inner { width: min(1280px,100%); min-height: 66px; margin: 0 auto; padding: 13px 26px; display:flex; align-items:center; justify-content:space-between; gap:32px; }
+.musee-cookie-copy { max-width:670px; }
+.musee-cookie-eyebrow { display:block; margin-bottom:5px; color:rgba(215,202,181,.65); font-family:Syne,sans-serif; font-size:8px; font-weight:400; letter-spacing:.28em; text-transform:uppercase; }
+.musee-cookie-copy p { margin:0; font-family:Syne,sans-serif; font-size:clamp(10px,.8vw,12px); font-weight:400; line-height:1.5; letter-spacing:.02em; }
+.musee-cookie-actions { display:flex; align-items:center; gap:clamp(18px,2.2vw,34px); white-space:nowrap; }
+.musee-cookie-actions button,.musee-cookie-link { position:relative; min-height:31px; padding:0 2px; display:inline-flex; align-items:center; justify-content:center; overflow:hidden; border:0; font-family:Syne,sans-serif; font-size:8px; font-weight:400; letter-spacing:.22em; text-transform:uppercase; transition:color .45s ease; }
+.musee-cookie-link { color:rgba(255,255,255,.48); }.musee-cookie-link:hover { color:rgba(255,255,255,.9); }
+.musee-cookie-secondary { color:rgba(255,255,255,.58); background:transparent; }.musee-cookie-secondary:hover { color:white; }
+.musee-cookie-primary { color:rgba(255,255,255,.92); background:transparent; }.musee-cookie-primary:hover { color:white; }
+.musee-cookie-primary::after { content:''; position:absolute; right:0; bottom:2px; left:0; height:1px; background:linear-gradient(90deg,transparent,rgba(255,255,255,.9),transparent); box-shadow:0 0 8px rgba(255,255,255,.34); transform:translateX(-120%); animation:consentLight 5.3s cubic-bezier(.4,0,.2,1) infinite; }
+@keyframes consentLight { 0%,16%{opacity:0;transform:translateX(-120%)} 25%{opacity:.3} 38%{opacity:.92} 56%{opacity:.68} 72%,100%{opacity:0;transform:translateX(120%)} }
+.musee-cookie-reopen { position:fixed; z-index:9999; right:20px; bottom:16px; color:rgba(255,255,255,.36); font-family:Syne,sans-serif; font-size:8px; letter-spacing:.2em; text-transform:uppercase; transition:color .4s ease; }.musee-cookie-reopen:hover { color:rgba(255,255,255,.8); }
+@media(max-width:760px){.musee-cookie-inner{padding:14px 16px 13px;flex-direction:column;align-items:stretch;gap:12px}.musee-cookie-actions{display:grid;grid-template-columns:1fr 1fr;white-space:normal}.musee-cookie-link{grid-column:1/-1;justify-content:flex-start;min-height:auto;padding:0}.musee-cookie-actions button{padding:0 8px}}
+@media(prefers-reduced-motion:reduce){.musee-cookie-banner,.musee-cookie-actions button,.musee-cookie-link{transition:none}}
+
+.musee-cookie-banner[hidden],.musee-cookie-reopen[hidden]{display:none!important}.musee-cookie-reopen{background:transparent;border:0;cursor:pointer;padding:5px}.musee-cookie-banner{animation:musee-cookie-arrive .8s cubic-bezier(.22,1,.36,1) both}.musee-cookie-actions a{text-decoration:none}.musee-cookie-actions button{cursor:pointer}.musee-cookie-actions button:focus-visible,.musee-cookie-link:focus-visible,.musee-cookie-reopen:focus-visible{outline:1px solid #aaa;outline-offset:4px}.musee-cookie-copy p{text-shadow:none;opacity:1;color:inherit}.musee-cookie-banner{letter-spacing:normal}.musee-cookie-primary{grid-column:2}.musee-cookie-link{grid-column:auto}@keyframes musee-cookie-arrive{from{opacity:0;transform:translateY(28px);filter:blur(8px)}to{opacity:1;transform:translateY(0);filter:blur(0)}}@media(max-width:760px){.musee-cookie-actions{grid-template-columns:1fr auto}.musee-cookie-link{grid-column:1}}@media(prefers-reduced-motion:reduce){.musee-cookie-banner,.musee-cookie-primary::after{animation:none}.musee-cookie-primary::after{opacity:.4;transform:none}}
