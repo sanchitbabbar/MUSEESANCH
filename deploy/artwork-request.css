@@ -53,3 +53,12 @@
 @keyframes request-appear{from{opacity:0;transform:scale(.95)}to{opacity:1;transform:scale(1)}}
 @media(max-height:560px){.request-dialog{max-height:calc(100dvh - 24px)}}
 @media(prefers-reduced-motion:reduce){.request-dialog[open]{animation:none}.request-dialog *{transition:none!important}}
+
+/* Confirmed delivery feedback, matching the SANCH enquiry forms. */
+#request-note.request-success{display:flex;flex-direction:column;align-items:center;justify-content:center;gap:0;padding:32px 0;margin:0;text-align:center;outline:none;animation:request-success-in .25s ease-out both}
+.request-success-mark{display:grid;place-items:center;width:64px;height:64px;margin:0 0 16px;border-radius:50%;background:rgba(255,255,255,.05);color:rgba(255,255,255,.7)}
+.request-success-mark svg{width:32px;height:32px;fill:none;stroke:currentColor;stroke-width:1;stroke-linecap:round;stroke-linejoin:round}
+.request-success-title{display:block;font:300 14px/1.7 Montserrat,sans-serif;letter-spacing:.025em;color:rgba(255,255,255,.8)}
+.request-success-followup{display:block;margin-top:4px;font:300 12px/1.7 Montserrat,sans-serif;color:rgba(255,255,255,.5)}
+@keyframes request-success-in{from{opacity:0;transform:translateY(10px)}to{opacity:1;transform:translateY(0)}}
+@media(prefers-reduced-motion:reduce){#request-note.request-success{animation:none}}
