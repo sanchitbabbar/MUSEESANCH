@@ -2,7 +2,7 @@
  const key='musee-sanch:language';let saved;try{saved=localStorage.getItem(key);}catch{}
  const valid=v=>v==='en'||v==='fr';
  let userSelected=false;
- const chooser=document.createElement('dialog');chooser.className='language-choice';chooser.setAttribute('aria-labelledby','language-title');
+ const chooser=document.createElement('dialog');chooser.className='language-choice';chooser.setAttribute('aria-labelledby','language-title');chooser.setAttribute('data-nosnippet','');
  chooser.innerHTML='<div class="language-choice-inner"><p class="language-brand" aria-label="Musée Sanch">MUS<span class="logo-acute">E</span>E SANCH</p><h2 id="language-title">Choisissez votre langue<span>Choose your language</span></h2><div class="language-options"><button type="button" lang="en" data-choice="en">English</button><span aria-hidden="true">/</span><button type="button" lang="fr" data-choice="fr">Français</button></div></div>';
  const reopen=document.createElement('button');reopen.type='button';reopen.className='language-reopen';reopen.textContent='EN / FR';reopen.setAttribute('aria-label','Choose language / Choisir la langue');
  document.body.append(chooser);

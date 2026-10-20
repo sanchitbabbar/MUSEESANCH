@@ -1,0 +1,7 @@
+User-agent: *
+Allow: /
+Disallow: /api/
+Disallow: /functions/
+Disallow: /deploy/
+Disallow: /cloudflare-deploy/
+Sitemap: https://www.museesanch.com/sitemap.xml

@@ -1,7 +1,7 @@
 (() => {
  const key='musee-sanch:essential-cookies:v1';
  const banner=document.createElement('aside');banner.className='musee-cookie-banner';banner.hidden=true;
- banner.setAttribute('aria-label','Cookies');
+ banner.setAttribute('aria-label','Cookies');banner.setAttribute('data-nosnippet','');
  banner.innerHTML='<div class="musee-cookie-inner"><div class="musee-cookie-copy"><span class="musee-cookie-eyebrow"></span><p></p></div><div class="musee-cookie-actions"><a class="musee-cookie-link"></a><button type="button" class="musee-cookie-primary"></button></div></div>';
  const reopen=document.createElement('button');reopen.type='button';reopen.className='musee-cookie-reopen';reopen.textContent='COOKIES';
  document.body.append(banner);
