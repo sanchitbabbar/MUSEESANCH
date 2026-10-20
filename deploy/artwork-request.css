@@ -30,3 +30,26 @@
 
 #open-request::after,#send-request::after{animation:none;opacity:0;transform:translateX(-110%)}
 #open-request:hover::after,#open-request:focus-visible::after,#send-request:hover::after,#send-request:focus-visible::after{animation:musee-request-slow-beam 5.5s linear infinite;opacity:.65}
+
+/* Mobile enquiry mirrors the compact translucent form on sanchitbabbar.com. */
+.request-dialog{box-sizing:border-box;width:calc(100% - 32px);max-width:352px;max-height:calc(100dvh - 48px);margin:auto;padding:24px;border:0;border-radius:8px;background:linear-gradient(180deg,rgba(255,255,255,.05),transparent),rgba(0,0,0,.60);color:rgba(255,255,255,.9);box-shadow:0 24px 80px rgba(0,0,0,.25);backdrop-filter:blur(24px);-webkit-backdrop-filter:blur(24px);overflow-y:auto;overscroll-behavior:contain;scrollbar-width:thin;}
+.request-dialog::backdrop{background:rgba(0,0,0,.4);backdrop-filter:blur(4px);-webkit-backdrop-filter:blur(4px)}
+.request-dialog[open]{animation:request-appear .2s ease-out both}
+.request-dialog-close{appearance:none;-webkit-appearance:none;position:absolute;right:12px;top:12px;width:44px;height:44px;display:grid;place-items:center;border:0;background:none;padding:0;color:rgba(255,255,255,.4);font:300 26px/1 Montserrat,sans-serif;cursor:pointer;z-index:1;-webkit-tap-highlight-color:transparent}
+.request-dialog-close:hover,.request-dialog-close:focus-visible{color:rgba(255,255,255,.8)}
+.request-dialog #request-preview{margin:0;padding:0;border:0}
+.request-dialog #request-heading{margin:0 28px 24px 0;font:300 18px/1.5 Montserrat,sans-serif;letter-spacing:.05em;outline:none}
+.request-dialog #request-form label{border:0;padding:0;margin:0 0 16px}
+.request-dialog #request-form label span{position:absolute;width:1px;height:1px;overflow:hidden;clip-path:inset(50%);white-space:nowrap}
+.request-dialog #request-form input,.request-dialog #request-form textarea{box-sizing:border-box;display:block;width:100%;min-width:0;border:0;border-radius:6px;padding:10px 16px;background:rgba(255,255,255,.05);color:rgba(255,255,255,.9);font:300 16px/1.55 Montserrat,sans-serif;letter-spacing:normal;transition:background .3s ease;scroll-margin-block:24px}
+.request-dialog #request-form input:focus,.request-dialog #request-form textarea:focus{background:rgba(255,255,255,.1)}
+.request-dialog #request-form input::placeholder,.request-dialog #request-form textarea::placeholder{color:rgba(255,255,255,.3);opacity:1}
+.request-dialog #request-form textarea{min-height:112px;resize:vertical}
+.request-dialog #request-form .request-privacy{margin:16px 0;color:rgba(255,255,255,.45);font:300 10px/1.8 Montserrat,sans-serif}
+.request-dialog #send-request{margin-top:24px;padding:12px 16px;border-radius:6px;background:rgba(255,255,255,.1);font-size:11px;letter-spacing:.2em}
+.request-dialog #send-request:hover{background:rgba(255,255,255,.2)}
+.request-dialog #request-note{margin:16px 0 0;font:300 12px/1.7 Montserrat,sans-serif;color:rgba(255,255,255,.7)}
+.request-dialog #request-note:empty{display:none}
+@keyframes request-appear{from{opacity:0;transform:scale(.95)}to{opacity:1;transform:scale(1)}}
+@media(max-height:560px){.request-dialog{max-height:calc(100dvh - 24px)}}
+@media(prefers-reduced-motion:reduce){.request-dialog[open]{animation:none}.request-dialog *{transition:none!important}}

@@ -1,12 +1,46 @@
 (() => {
 const panel=document.getElementById('request-preview'),form=document.getElementById('request-form'),button=document.getElementById('open-request'),submit=document.getElementById('send-request'),status=document.getElementById('request-note');
 let pending=false,revision=0;
+const mobileRequest=window.matchMedia('(max-width: 767px)');
+const originalParent=panel.parentElement;
+const requestDialog=document.createElement('dialog');
+requestDialog.className='request-dialog';
+requestDialog.setAttribute('aria-labelledby','request-heading');
+const closeRequest=document.createElement('button');
+closeRequest.type='button';closeRequest.className='request-dialog-close';
+closeRequest.textContent='×';
+requestDialog.append(closeRequest);document.body.append(requestDialog);
+button.setAttribute('aria-controls','request-preview');button.setAttribute('aria-expanded','false');
+function restoreRequest(){
+ originalParent.append(panel);panel.hidden=true;button.hidden=false;
+ button.setAttribute('aria-expanded','false');
+ if(document.getElementById('artwork-detail').open)button.focus({preventScroll:true});
+}
+closeRequest.addEventListener('click',()=>requestDialog.close());
+requestDialog.addEventListener('close',restoreRequest);
+requestDialog.addEventListener('click',event=>{
+ if(event.target!==requestDialog)return;
+ const box=requestDialog.getBoundingClientRect();
+ if(event.clientX<box.left||event.clientX>box.right||event.clientY<box.top||event.clientY>box.bottom)requestDialog.close();
+});
+mobileRequest.addEventListener('change',()=>{if(requestDialog.open)requestDialog.close();});
+// Keep feedback visible after a successful submission hides the fields.
+form.after(status);
+
 const copy={fr:{title:'Formuler une demande',name:'Nom complet',email:'Adresse e-mail',message:'Votre message',submit:'ENVOYER MA DEMANDE',sending:'ENVOI…',privacy:'Vos coordonnées sont transmises via Formspree pour répondre à votre demande.',policy:'Confidentialité',success:'Votre demande a bien été envoyée. Nous vous contacterons prochainement.',error:'Votre demande n’a pas pu être confirmée. Réessayez ou contactez contact@studiosanch.com.'},en:{title:'Place a request',name:'Full Name',email:'Email Address',message:'Your Message',submit:'PLACE YOUR REQUEST',sending:'SENDING…',privacy:'Your details are sent through Formspree so we can respond to your enquiry.',policy:'Privacy',success:'Your request has been sent. We will contact you shortly.',error:'Your request could not be confirmed. Please try again or contact contact@studiosanch.com.'}};
 const lang=()=>document.documentElement.lang==='en'?'en':'fr';
 let outcome='';
-function translate(){const c=copy[lang()];button.textContent=document.getElementById('request-heading').textContent=c.title;for(const key of ['name','email','message'])panel.querySelector('[data-label='+key+']').textContent=c[key];submit.textContent=pending?c.sending:c.submit;status.textContent=outcome?c[outcome]:'';document.getElementById('request-privacy-text').textContent=c.privacy;const link=document.getElementById('request-policy');link.textContent=c.policy;link.href=lang()==='fr'?'./privacy-policy.html':'./privacy-policy-en.html';}
-button.addEventListener('click',()=>{translate();panel.hidden=false;button.hidden=true;const title=document.getElementById('detail-title').textContent;form.elements.message.value=lang()==='en'?`I would like to enquire about “${title}”.`:`Je souhaite recevoir des informations sur l’œuvre « ${title} ».`;form.elements.name.focus();});
-window.addEventListener('musee:artwork-selected',()=>{revision++;panel.hidden=true;button.hidden=false;form.hidden=false;form.reset();outcome='';translate();});
+function translate(){const c=copy[lang()];closeRequest.setAttribute('aria-label',lang()==='fr'?'Fermer le formulaire':'Close request form');button.textContent=document.getElementById('request-heading').textContent=c.title;for(const key of ['name','email','message']){panel.querySelector('[data-label='+key+']').textContent=c[key];form.elements[key].placeholder=c[key];}submit.textContent=pending?c.sending:c.submit;status.textContent=outcome?c[outcome]:'';document.getElementById('request-privacy-text').textContent=c.privacy;const link=document.getElementById('request-policy');link.textContent=c.policy;link.href=lang()==='fr'?'./privacy-policy.html':'./privacy-policy-en.html';}
+button.addEventListener('click',()=>{
+ translate();panel.hidden=false;button.hidden=true;button.setAttribute('aria-expanded','true');
+ const title=document.getElementById('detail-title').textContent;
+ if(!form.elements.message.value)form.elements.message.value=lang()==='en'?`I would like to enquire about “${title}”.`:`Je souhaite recevoir des informations sur l’œuvre « ${title} ».`;
+ if(mobileRequest.matches){
+  requestDialog.append(panel);requestDialog.showModal();requestDialog.scrollTop=0;
+  const heading=document.getElementById('request-heading');heading.tabIndex=-1;heading.focus({preventScroll:true});
+ }else form.elements.name.focus();
+});
+window.addEventListener('musee:artwork-selected',()=>{revision++;button.setAttribute('aria-expanded','false');if(requestDialog.open)requestDialog.close();panel.hidden=true;button.hidden=false;form.hidden=false;form.reset();outcome='';translate();});
 form.addEventListener('submit',async event=>{
  event.preventDefault();if(pending||!form.reportValidity())return;
  const current=revision;const title=document.getElementById('detail-title').textContent;const price=document.getElementById('detail-price').textContent;
