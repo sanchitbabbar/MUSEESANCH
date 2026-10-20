@@ -18,3 +18,9 @@ html{scroll-behavior:smooth}
 #collection{scroll-margin-top:0}
 @media(max-width:700px){.collection-prologue{height:155svh}.prologue-stage{min-height:560px}.prologue-brand{left:24px;top:28px;font-size:10px}.prologue-copy{width:100%;padding:45px 32px}.prologue-copy h1{font-size:34px;line-height:1.3}.prologue-description{max-width:290px;font-size:11px}.prologue-kicker{margin-bottom:22px}.prologue-art{width:145px;opacity:.3}.prologue-art-left{top:12%;left:-55px}.prologue-art-right{top:auto;bottom:13%;right:-45px}.prologue-stage::after{background:linear-gradient(0deg,#05050522,#05050566 30%,#05050566 70%,#05050522)}.prologue-scroll{bottom:26px}.prologue-note{max-width:250px;margin:20px auto 0}}
 @media(prefers-reduced-motion:reduce){html{scroll-behavior:auto}.collection-prologue{height:auto}.prologue-stage{position:relative;min-height:100svh}.prologue-copy,.prologue-art{will-change:auto}.prologue-scroll span{animation:none}}
+
+/* Ambient movement stays on the inner image, independent of scroll parallax. */
+.prologue-art img{will-change:transform;animation:musee-art-drift-left 22.684s ease-in-out infinite alternate;transform-origin:50% 50%}
+.prologue-art-right img{animation-name:musee-art-drift-right;animation-duration:27.221s;animation-delay:-11s}
+@keyframes musee-art-drift-left{0%{transform:translate3d(-5px,16px,0) rotate(-.5deg) scale(1)}100%{transform:translate3d(14px,-22px,0) rotate(.6deg) scale(1.015)}}
+@keyframes musee-art-drift-right{0%{transform:translate3d(4px,-14px,0) rotate(.4deg) scale(1.01)}100%{transform:translate3d(-14px,22px,0) rotate(-.6deg) scale(1)}}

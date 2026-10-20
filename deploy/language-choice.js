@@ -15,7 +15,7 @@
   document.documentElement.lang=lang;
   const title=document.querySelector('.eyebrow.ode'),intro=document.querySelector('.intro'),entry=document.querySelector('.museum-entry');
   if(title)title.textContent=lang==='fr'?'Une Ode à la Féminité':'An Ode to Femininity';
-  if(intro)intro.textContent=lang==='fr'?"Où se révèle la délicate interaction entre le masculin et le féminin, dans une grâce auréolée d'élégance.":'Revealing the delicate interplay between masculine and feminine, in a grace imbued with elegance.';
+  if(intro)intro.textContent=lang==='fr'?"Où se révèle la délicate interaction entre le masculin et le féminin, dans une résonance auréolée d'élégance.":'Revealing the delicate interplay between masculine and feminine, in a resonance imbued with elegance.';
   if(entry)entry.textContent=lang==='fr'?'Entrer dans l’univers':'Enter the universe';
   const links=document.querySelectorAll('footer nav a');
   ['privacy-policy','terms','legal-notice'].forEach((stem,i)=>{if(links[i]){links[i].href='./'+stem+(lang==='en'?'-en':'')+'.html';links[i].textContent=(lang==='fr'?['CONFIDENTIALITÉ','CONDITIONS','MENTIONS LÉGALES']:['PRIVACY','TERMS','LEGAL NOTICE'])[i];}});
