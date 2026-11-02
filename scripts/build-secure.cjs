@@ -27,15 +27,14 @@ for (const directory of ['images','fonts']) {
   copy(source);
 }
 fs.cpSync(path.join(root,'functions'),path.join(out,'functions'),{recursive:true});
+const searchPaths = require('./build-artwork-search.cjs')(root,out);
 const assetPaths = [];
 function listAssets(dir) { for (const item of fs.readdirSync(dir,{withFileTypes:true})) { const absolute=path.join(dir,item.name); if(item.isDirectory()) listAssets(absolute); else assetPaths.push('/'+path.relative(out,absolute).split(path.sep).join('/')); } }
 for (const directory of ['images','fonts']) listAssets(path.join(out,directory));
-const publicPaths = ['/', ...assetPaths, ...files.map(file=>'/'+file), ...files.filter(file=>file.endsWith('.html')).map(file=>'/'+file.slice(0,-5)), '/api/visitor-language.php'];
+const publicPaths = [...searchPaths, '/', ...assetPaths, ...files.map(file=>'/'+file), ...files.filter(file=>file.endsWith('.html')).map(file=>'/'+file.slice(0,-5)), '/api/visitor-language.php'];
 const middleware = 'const SECURITY_HEADERS = '+JSON.stringify(headers)+';\nconst PUBLIC_FILES = '+JSON.stringify(publicPaths)+';\n'+fs.readFileSync(path.join(root,'security/pages-middleware.js'),'utf8');
 fs.writeFileSync(path.join(out,'functions/_middleware.js'),middleware);
 fs.writeFileSync(path.join(out,'_routes.json'),JSON.stringify({version:1,include:['/*'],exclude:[]},null,2));
-fs.mkdirSync(path.join(out,'api'),{recursive:true});
-fs.copyFileSync(path.join(root,'api/visitor-language.php'),path.join(out,'api/visitor-language.php'));
 fs.writeFileSync(path.join(out,'_headers'),'/*\n'+Object.entries(headers).map(([k,v])=>`  ${k}: ${v}`).join('\n')+'\n  ! Access-Control-Allow-Origin\n');
 // Apache/SiteGround equivalent. Do not preload HSTS or affect other subdomains.
 const apache = `<IfModule mod_headers.c>\n${Object.entries(headers).map(([k,v])=>`Header always set ${k} "${v}"`).join('\n')}\nHeader always unset Access-Control-Allow-Origin\n</IfModule>\nOptions -Indexes\n<FilesMatch "(^\\.|\\.(?:txt|json|zip|pages|env|log|sql|bak)$)">\nRequire all denied\n</FilesMatch>\n<Files "robots.txt">\nRequire all granted\n</Files>\n`;
