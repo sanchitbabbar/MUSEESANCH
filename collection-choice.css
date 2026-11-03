@@ -132,3 +132,7 @@
 .collection-revealing body > .language-reopen{display:none}
 
 .choice-medium{font:300 11px/1.8 Montserrat,sans-serif;letter-spacing:.06em;color:#999;margin:0 0 24px}
+
+.choice-auction-preview{flex-direction:column;gap:30px}
+
+.choice-acquisition-heading{font:300 9px/1.8 Montserrat,sans-serif;letter-spacing:.2em;text-transform:uppercase;color:#999;margin:0}
