@@ -7,7 +7,7 @@ const out = path.join(root, 'dist');
 fs.rmSync(out, {recursive:true, force:true});
 fs.mkdirSync(out, {recursive:true});
 const files = ['index.html','artworks.html','404.html','styles.css','fonts.css','gallery.js','gallery.css',
-  'artwork-request.css','artwork-request.js','collection-intro.css','collection-intro.js',
+  'artwork-request.css','artwork-request.js','collection-choice.css','collection-choice.js','collection-intro.css','collection-intro.js',
   'language-choice.js','language-choice.css','cookie-consent.js','cookie-consent.css',
   'legal.css','legal-notice.html','legal-notice-en.html','privacy-policy.html','privacy-policy-en.html',
   'terms.html','terms-en.html','robots.txt','sitemap.xml'];

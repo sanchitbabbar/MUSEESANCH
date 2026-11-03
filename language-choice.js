@@ -6,7 +6,7 @@
  chooser.innerHTML='<div class="language-choice-inner"><p class="language-brand" aria-label="Musée Sanch">MUS<span class="logo-acute">E</span>E SANCH</p><h2 id="language-title">Choisissez votre langue<span>Choose your language</span></h2><div class="language-options"><button type="button" lang="en" data-choice="en">English</button><span aria-hidden="true">/</span><button type="button" lang="fr" data-choice="fr">Français</button></div></div>';
  const reopen=document.createElement('button');reopen.type='button';reopen.className='language-reopen';reopen.textContent='EN / FR';reopen.setAttribute('aria-label','Choose language / Choisir la langue');
  document.body.append(chooser);
- if(!document.querySelector('.gallery-navigation')) document.body.append(reopen);
+ document.body.append(reopen);
  function apply(lang,persist=false){
   if(persist){userSelected=true;try{localStorage.setItem(key,lang);}catch{}}
   const path=location.pathname;const base=path.split('/').pop();
