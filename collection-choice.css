@@ -136,3 +136,20 @@
 .choice-auction-preview{flex-direction:column;gap:30px}
 
 .choice-acquisition-heading{font:300 9px/1.8 Montserrat,sans-serif;letter-spacing:.2em;text-transform:uppercase;color:#999;margin:0}
+
+.choice-invitation-scroll{width:100%;max-height:310px;overflow-y:auto;scrollbar-width:none;display:flex;flex-direction:column;align-items:center;gap:30px;scroll-behavior:smooth}
+.choice-invitation-scroll::-webkit-scrollbar{display:none}
+.choice-invitation-scroll[data-more="true"]{mask-image:linear-gradient(to bottom,#000 85%,transparent);-webkit-mask-image:linear-gradient(to bottom,#000 85%,transparent)}
+.choice-invitation-scroll .choice-attend{flex-shrink:0}
+.collection-choice .choice-more-originals{border:0;background:none;color:#ffffff60;padding:4px 16px;font-size:20px;line-height:1;opacity:0;pointer-events:none;transition:opacity .8s ease;min-height:28px}
+.collection-choice .choice-more-originals[data-visible="true"]{opacity:1;pointer-events:auto}
+
+.collection-choice .choice-more-originals{min-height:48px;display:flex;align-items:center;justify-content:center}
+.originals-scroll-light{display:block;position:relative;width:1px;height:32px;overflow:hidden;background:rgba(255,255,255,.1)}
+.originals-scroll-light::after{content:"";position:absolute;left:0;top:0;width:1px;height:16px;background:linear-gradient(transparent,rgba(255,255,255,.65),transparent);animation:originals-light-down 3.2s ease-in-out infinite}
+@keyframes originals-light-down{0%{transform:translateY(-16px);opacity:0}25%,70%{opacity:1}100%{transform:translateY(32px);opacity:0}}
+@media(prefers-reduced-motion:reduce){.originals-scroll-light::after{animation:none;top:8px;opacity:.6}}
+
+/* Reuse the exact Discover light from the introduction. */
+.originals-scroll-light{height:48px;overflow:visible;background:linear-gradient(to top,#fff,transparent);transform-origin:bottom;animation:musee-discover-line 2s ease-in-out infinite}
+.originals-scroll-light::after{display:none;animation:none}
