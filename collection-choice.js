@@ -7,17 +7,25 @@ const entryStage=document.createElement('section');entryStage.className='collect
 const collectionHeader=document.getElementById('collection');collectionHeader.before(entryStage);
 const scrollLink=document.querySelector('.prologue-scroll');
 const reducedMotion=()=>matchMedia('(prefers-reduced-motion: reduce)').matches;
-let scrollFrame=0;
+let scrollFrame=0,cancelGlide=()=>{};
 function glideTo(element){
- cancelAnimationFrame(scrollFrame);
+ cancelGlide();
  const start=scrollY,end=start+element.getBoundingClientRect().top;
- // Keep this explicitly requested glide smooth; reduced motion uses fading screens without spatial animation.
- const began=performance.now(),duration=3000;
- const cancel=()=>{cancelAnimationFrame(scrollFrame);cleanup();};
- const cleanup=()=>{removeEventListener('wheel',cancel);removeEventListener('touchstart',cancel);removeEventListener('keydown',cancel);};
- addEventListener('wheel',cancel,{passive:true});addEventListener('touchstart',cancel,{passive:true});addEventListener('keydown',cancel);
- function step(now){const t=Math.min(1,(now-began)/duration),e=t*t*t*(t*(t*6-15)+10);scrollTo({top:start+(end-start)*e,behavior:'instant'});if(t<1)scrollFrame=requestAnimationFrame(step);else cleanup();}
- scrollFrame=requestAnimationFrame(step);
+ return new Promise(resolve=>{
+  const began=performance.now(),duration=3000;
+  const cleanup=()=>{removeEventListener('wheel',cancel);removeEventListener('touchstart',cancel);removeEventListener('keydown',cancel);cancelGlide=()=>{};};
+  const cancel=()=>{cancelAnimationFrame(scrollFrame);cleanup();resolve(false);};cancelGlide=cancel;
+  addEventListener('wheel',cancel,{passive:true});addEventListener('touchstart',cancel,{passive:true});addEventListener('keydown',cancel);
+  function step(now){const t=Math.min(1,(now-began)/duration),e=t*t*t*(t*(t*6-15)+10);scrollTo({top:start+(end-start)*e,behavior:'instant'});if(t<1)scrollFrame=requestAnimationFrame(step);else{cleanup();resolve(true);}}
+  scrollFrame=requestAnimationFrame(step);
+ });
+}
+// A cancelled or unavailable animation must never strand a collection behind its curtain.
+async function curtain(element,frames,options){
+ let animation,timer;
+ try{animation=element.animate(frames,{...options,fill:'forwards'});await Promise.race([animation.finished.catch(()=>{}),new Promise(resolve=>{timer=setTimeout(resolve,options.duration+250);})]);}
+ catch{}finally{clearTimeout(timer);}
+ return ()=>animation?.cancel();
 }
 function dissolveIn(){if(reducedMotion()){sheet.animate([{opacity:0},{opacity:1}],{duration:2800,easing:'ease-in-out'});return;}sheet.animate([{opacity:0,transform:'translateY(24px)'},{opacity:1,transform:'translateY(0)'}],{duration:2800,easing:'cubic-bezier(.45,0,.55,1)'});}
 
@@ -46,7 +54,7 @@ function updateOriginalsHint(){const more=invitationList.scrollHeight-invitation
 invitationList.addEventListener('scroll',updateOriginalsHint,{passive:true});new ResizeObserver(updateOriginalsHint).observe(invitationList);
 moreOriginals.onclick=()=>invitationList.scrollBy({top:180,behavior:'smooth'});
 
-preview.querySelectorAll('.choice-attend').forEach((button,index)=>button.onclick=()=>{work=acquisitionWorks[index];form.elements.message.value='';showView('original');});
+preview.querySelectorAll('.choice-attend').forEach((button,index)=>button.onclick=()=>{if(changingView)return;work=acquisitionWorks[index];form.elements.message.value='';showView('original');});
 const options=dialog.querySelector('.collection-choice-options'),original=dialog.querySelector('.choice-original'),formView=dialog.querySelector('.choice-form-view'),form=dialog.querySelector('form'),status=dialog.querySelector('.choice-status'),submit=dialog.querySelector('.choice-submit');
 let returningIntro=false;
 let view='choices',shown=false,pending=false,sent=false,failed=false,previousOverflow='',returnFocus;
@@ -58,21 +66,41 @@ collectionFooter.querySelectorAll('nav a').forEach((link,i)=>{link.href='./'+['p
 preview.querySelectorAll('.choice-attend').forEach((button,index)=>{button.querySelector('[data-upcoming]').hidden=true;button.querySelector('.choice-preview-title').textContent=acquisitionWorks[index].title;button.querySelector('[data-attend]').textContent=lang()==='fr'?'Se renseigner':'Enquire';});original.querySelector('img').src=work.title==='Instar'?'./images/auctions/instar-original.webp':work.title==='Deepa'?'./images/auctions/deepa-original.webp':'./images/auctions/celle-qui-se-connait-original.webp';original.querySelector('img').alt=work.title;formView.querySelector('h2').textContent=work.title;dialog.setAttribute('aria-label',c.label);dialog.querySelector('.choice-scroll-up').hidden=view!=='choices';dialog.querySelector('.choice-scroll-up').setAttribute('aria-label',lang()==='fr'?'Remonter vers l’introduction':'Scroll up to the introduction');collectionHeader.querySelector('.back').setAttribute('aria-label',lang()==='fr'?'Retour aux collections':'Back to collections');dialog.querySelector('.choice-back').textContent=c.back;dialog.querySelector('.choice-back').hidden=view==='choices';dialog.querySelector('[data-editions]').textContent=c.editions;dialog.querySelector('[data-originals]').textContent=c.originals;dialog.querySelectorAll('.choice-auction-label').forEach(el=>el.textContent=c.auction);original.querySelector('h2').textContent=work.title;original.querySelector('.choice-year').textContent=work.year;original.querySelector('.choice-medium').textContent=lang()==='fr'?'Encre sur papier':'Ink on paper';original.querySelector('.choice-proposal').textContent=lang()==='fr'?'Proposition — à partir de 1 000 000 EUR':'Proposal — from 1,000,000 EUR';original.querySelector('.choice-poetry').textContent=lang()==='fr'?work.descriptionFr:work.descriptionEn;dialog.querySelector('.choice-interest').textContent=c.interest;for(const key of ['name','email','message'])dialog.querySelector('[data-label="'+key+'"]').textContent=c[key];submit.textContent=pending?c.sending:c.submit;status.textContent=sent?c.success:failed?c.error:'';const privacy=dialog.querySelector('.choice-privacy');privacy.replaceChildren(document.createTextNode(c.privacy+' '));const link=document.createElement('a');link.href=lang()==='fr'?'./privacy-policy.html':'./privacy-policy-en.html';link.textContent=c.policy;privacy.append(link);}
 const collectionTitle=document.title;
 const originalSlugs=['celle-qui-se-connait','deepa','instar'];
-function syncOriginalAddress(){const url=new URL(location.href);if(view==='original'||view==='form'){url.searchParams.set('original',originalSlugs[acquisitionWorks.indexOf(work)]);document.title=work.title+' — '+(lang()==='fr'?'Œuvre originale':'Original artwork')+' | MUSÉE SANCH';}else{url.searchParams.delete('original');document.title=collectionTitle;}history.replaceState(history.state,'',url);}
-let viewTransition=0;
-async function showView(next){const transition=++viewTransition;await sheet.animate([{opacity:1},{opacity:0}],{duration:550,easing:'ease-in-out'}).finished.catch(()=>{});if(transition!==viewTransition)return;applyView(next);}
-function applyView(next){view=next;syncOriginalAddress();dialog.dataset.view=next;options.hidden=next!=='choices';preview.hidden=next!=='preview';original.hidden=next!=='original';formView.hidden=next!=='form';translate();dialog.scrollTop=0;(next==='choices'?dialog.querySelector('[data-editions]'):dialog.querySelector('.choice-back')).focus({preventScroll:true});if(reducedMotion()){sheet.animate([{opacity:0},{opacity:1}],{duration:2800,easing:'ease-in-out'});return;}sheet.animate([{opacity:0,transform:'translateY(24px)'},{opacity:1,transform:'translateY(0)'}],{duration:2800,easing:'cubic-bezier(.45,0,.55,1)'});}
+function syncOriginalAddress(){const url=new URL(location.href);if(view==='original'||view==='form'){url.searchParams.set('original',originalSlugs[acquisitionWorks.indexOf(work)]);document.title=work.title+' — '+(lang()==='fr'?'Œuvre originale':'Original artwork')+' | MUSÉE SANCH';}else{url.searchParams.delete('original');document.title=collectionTitle;}try{history.replaceState(history.state,'',url);}catch{} }
+let changingView=false;
+function applyView(next){
+ view=next;syncOriginalAddress();dialog.dataset.view=next;
+ options.hidden=next!=='choices';preview.hidden=next!=='preview';original.hidden=next!=='original';formView.hidden=next!=='form';
+ translate();requestAnimationFrame(updateOriginalsHint);
+}
+async function showView(next){
+ if(changingView||next===view)return;changingView=true;sheet.inert=true;
+ const previousMinHeight=sheet.style.minHeight;
+ sheet.style.minHeight=sheet.getBoundingClientRect().height+'px';
+ let clearExit=()=>{},clearEntry=()=>{};
+ try{
+  clearExit=await curtain(sheet,[{opacity:1},{opacity:0}],{duration:550,easing:'ease-in-out'});
+  applyView(next);
+  const target=next==='choices'?dialog.querySelector('[data-editions]'):dialog.querySelector('.choice-back');
+  const frames=reducedMotion()?[{opacity:0},{opacity:1}]:[{opacity:0,transform:'translateY(24px)'},{opacity:1,transform:'translateY(0)'}];
+  // The page scrolls, not the inline dialog. Keep its height stable during the handover.
+  const arriving=curtain(sheet,frames,{duration:2800,easing:'cubic-bezier(.45,0,.55,1)'});
+  const reposition=Math.abs(entryStage.getBoundingClientRect().top)>100?glideTo(entryStage):Promise.resolve();
+  clearExit();clearExit=()=>{};
+  [clearEntry]=await Promise.all([arriving,reposition]);
+  sheet.inert=false;target.focus({preventScroll:true});
+ }finally{clearExit();clearEntry();sheet.style.minHeight=previousMinHeight;sheet.inert=false;changingView=false;}
+}
 async function revealEditions(){
- const editions=dialog.querySelector('[data-editions]');if(editions.disabled)return;editions.disabled=true;
- if(reducedMotion())await sheet.animate([{opacity:1},{opacity:0}],{duration:2200,easing:'ease-in-out',fill:'forwards'}).finished;else await sheet.animate([{opacity:1,transform:'translateY(0)'},{opacity:0,transform:'translateY(-35px)'}],{duration:2200,easing:'cubic-bezier(.45,0,.55,1)',fill:'forwards'}).finished;
- document.documentElement.classList.remove('collection-pending');
- document.documentElement.classList.add('collection-revealing');
- entryStage.hidden=true;
- // Settle the document beneath the still-invisible curtain before removing it.
- cancelAnimationFrame(scrollFrame);
- scrollTo({top:scrollY+collectionHeader.getBoundingClientRect().top,behavior:'instant'});
- dialog.close();sheet.getAnimations().forEach(animation=>animation.cancel());
- document.getElementById('works-tab').focus({preventScroll:true});
+ const editions=dialog.querySelector('[data-editions]');if(editions.disabled||changingView)return;editions.disabled=true;changingView=true;sheet.inert=true;
+ let clear=()=>{};
+ try{
+  clear=await curtain(sheet,reducedMotion()?[{opacity:1},{opacity:0}]:[{opacity:1,transform:'translateY(0)'},{opacity:0,transform:'translateY(-35px)'}],{duration:2200,easing:'cubic-bezier(.45,0,.55,1)'});
+  document.documentElement.classList.remove('collection-pending');document.documentElement.classList.add('collection-revealing');
+  entryStage.hidden=true;cancelGlide();
+  scrollTo({top:scrollY+collectionHeader.getBoundingClientRect().top,behavior:'instant'});
+  dialog.close();document.getElementById('works-tab').focus({preventScroll:true});
+ }finally{clear();sheet.inert=false;editions.disabled=false;changingView=false;}
 }
 dialog.querySelector('[data-editions]').onclick=revealEditions;
 function returnToIntro(){
@@ -84,14 +112,13 @@ let returningChoices=false;
 collectionHeader.querySelector('.back').addEventListener('click',async event=>{
  event.preventDefault();event.stopImmediatePropagation();
  if(returningChoices)return;returningChoices=true;
- cancelAnimationFrame(scrollFrame);
+ cancelGlide();
  const galleryParts=[collectionHeader,grid,document.querySelector('body > footer')].filter(Boolean);
- const departures=galleryParts.map(element=>element.animate([{opacity:1},{opacity:0}],{duration:1800,easing:'cubic-bezier(.45,0,.55,1)',fill:'forwards'}));
- await Promise.all(departures.map(animation=>animation.finished));
+ const departures=await Promise.all(galleryParts.map(element=>curtain(element,[{opacity:1},{opacity:0}],{duration:1800,easing:'cubic-bezier(.45,0,.55,1)'})));
  document.documentElement.classList.add('collection-pending');document.documentElement.classList.remove('collection-revealing');
  entryStage.hidden=false;dialog.querySelector('[data-editions]').disabled=false;
  
- applyView('choices');if(!dialog.open)dialog.show();glideTo(entryStage);departures.forEach(animation=>animation.cancel());returningChoices=false;dialog.querySelector('[data-editions]').focus({preventScroll:true});
+ applyView('choices');if(!dialog.open)dialog.show();dissolveIn();departures.forEach(clear=>clear());await glideTo(entryStage);returningChoices=false;dialog.querySelector('[data-editions]').focus({preventScroll:true});
 },true);
 dialog.querySelector('[data-originals]').onclick=()=>showView('preview');
 
@@ -106,7 +133,7 @@ function maybeOpen(){}
 shown=true;dialog.show();
 new MutationObserver(()=>{translate();syncOriginalAddress();requestAnimationFrame(maybeOpen);}).observe(document.documentElement,{attributes:true,attributeFilter:['lang']});
 translate();
-const requestedOriginal=originalSlugs.indexOf(new URLSearchParams(location.search).get('original'));if(requestedOriginal>=0){work=acquisitionWorks[requestedOriginal];applyView('original');requestAnimationFrame(()=>entryStage.scrollIntoView({behavior:'instant'}));}
+const requestedOriginal=originalSlugs.indexOf(new URLSearchParams(location.search).get('original'));if(requestedOriginal>=0){work=acquisitionWorks[requestedOriginal];applyView('original');dissolveIn();requestAnimationFrame(()=>entryStage.scrollIntoView({behavior:'instant'}));}
 if(location.hash==='#collection')requestAnimationFrame(()=>entryStage.scrollIntoView({behavior:'instant'}));
 
 // Scroll cues guide the next movement; their labels never pulse.

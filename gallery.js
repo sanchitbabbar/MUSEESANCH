@@ -18,7 +18,7 @@ for (const [index, work] of designs.entries()) {
   document.getElementById('detail-price').textContent=(language==='fr'?'À partir de €':'From €')+work.basePrice;
   document.getElementById('detail-sizes').textContent=work.sizes.map(size=>size.dimensions).join(' · ');
   document.getElementById('frame-toggle').setAttribute('aria-pressed','false');
-  dialog.showModal(); document.body.style.overflow='hidden';
+  dialog.showModal(); dialog.animate([{opacity:0},{opacity:1}],{duration:650,easing:'cubic-bezier(.45,0,.55,1)'}); document.body.style.overflow='hidden';
  });
 }
 let closingArtworkDetail=false;
@@ -26,7 +26,7 @@ async function closeArtworkDetail(){if(closingArtworkDetail)return;closingArtwor
 dialog.addEventListener('cancel',event=>{event.preventDefault();closeArtworkDetail();});
 document.getElementById('close-detail').addEventListener('click',()=>closeArtworkDetail());
 dialog.addEventListener('click',e=>{if(e.target===dialog)closeArtworkDetail();});
-dialog.addEventListener('close',()=>{document.body.style.overflow='';returnTo?.focus();});
+dialog.addEventListener('close',()=>{document.body.style.overflow='';returnTo?.focus({preventScroll:true});});
 function setFramed(active) {
  const image=document.getElementById('detail-image');
  image.classList.toggle('framed', active);
