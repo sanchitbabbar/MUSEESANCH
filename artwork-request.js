@@ -15,12 +15,15 @@ function restoreRequest(){
  button.setAttribute('aria-expanded','false');
  if(document.getElementById('artwork-detail').open)button.focus({preventScroll:true});
 }
-closeRequest.addEventListener('click',()=>requestDialog.close());
+let closingRequest=false;
+async function closeRequestSoftly(){if(closingRequest||!requestDialog.open)return;closingRequest=true;const fade=requestDialog.animate([{opacity:1},{opacity:0}],{duration:600,easing:'ease-in-out'});await fade.finished.catch(()=>{});requestDialog.close();fade.cancel();closingRequest=false;}
+requestDialog.addEventListener('cancel',event=>{event.preventDefault();closeRequestSoftly();});
+closeRequest.addEventListener('click',closeRequestSoftly);
 requestDialog.addEventListener('close',restoreRequest);
 requestDialog.addEventListener('click',event=>{
  if(event.target!==requestDialog)return;
  const box=requestDialog.getBoundingClientRect();
- if(event.clientX<box.left||event.clientX>box.right||event.clientY<box.top||event.clientY>box.bottom)requestDialog.close();
+ if(event.clientX<box.left||event.clientX>box.right||event.clientY<box.top||event.clientY>box.bottom)closeRequestSoftly();
 });
 // Keep feedback visible after a successful submission hides the fields.
 form.after(status);
@@ -54,7 +57,7 @@ button.addEventListener('click',()=>{
  requestDialog.showModal();requestDialog.scrollTop=0;
  const heading=document.getElementById('request-heading');heading.tabIndex=-1;heading.focus({preventScroll:true});
 });
-window.addEventListener('musee:artwork-selected',()=>{revision++;clearTimeout(successTimer);button.setAttribute('aria-expanded','false');if(requestDialog.open)requestDialog.close();panel.hidden=true;button.hidden=false;form.hidden=false;form.reset();outcome='';translate();});
+window.addEventListener('musee:artwork-selected',()=>{revision++;clearTimeout(successTimer);button.setAttribute('aria-expanded','false');if(requestDialog.open)closeRequestSoftly();panel.hidden=true;button.hidden=false;form.hidden=false;form.reset();outcome='';translate();});
 form.addEventListener('submit',async event=>{
  event.preventDefault();if(pending||!form.reportValidity())return;
  const current=revision;const title=document.getElementById('detail-title').textContent;const price=document.getElementById('detail-price').textContent;
@@ -63,7 +66,7 @@ form.addEventListener('submit',async event=>{
  const controller=new AbortController();const timeout=setTimeout(()=>controller.abort(),15000);
  try{const response=await fetch(form.action,{method:'POST',body:payload,headers:{Accept:'application/json'},signal:controller.signal});if(!response.ok)throw Error('Rejected');const data=await response.json();if(data.ok!==true)throw Error('Unconfirmed');if(current===revision){outcome='success';form.reset();form.hidden=true;
  renderStatus(copy[lang()]);successPanel.focus({preventScroll:true});
- successTimer=setTimeout(()=>{if(current!==revision)return;if(requestDialog.open)requestDialog.close();else restoreRequest();},5000);
+ successTimer=setTimeout(()=>{if(current!==revision)return;if(requestDialog.open)closeRequestSoftly();else restoreRequest();},5000);
 }}
  catch{if(current===revision)outcome='error';}
  finally{clearTimeout(timeout);pending=false;submit.disabled=false;form.removeAttribute('aria-busy');translate();}
