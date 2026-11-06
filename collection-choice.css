@@ -191,3 +191,5 @@
  .choice-more-originals[aria-hidden="true"]{display:none}
 }
 @media(prefers-reduced-motion:reduce){.collection-view-arriving{animation:none!important}}
+
+.choice-provenance{display:block;margin-top:4px}
