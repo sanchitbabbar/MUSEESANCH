@@ -74,22 +74,16 @@ function applyView(next){
  translate();requestAnimationFrame(updateOriginalsHint);
 }
 async function showView(next){
- if(changingView||next===view)return;changingView=true;sheet.inert=true;
- const previousMinHeight=sheet.style.minHeight;
- sheet.style.minHeight=sheet.getBoundingClientRect().height+'px';
- let clearExit=()=>{},clearEntry=()=>{};
- try{
-  clearExit=await curtain(sheet,[{opacity:1},{opacity:0}],{duration:550,easing:'ease-in-out'});
-  applyView(next);
-  const target=next==='choices'?dialog.querySelector('[data-editions]'):dialog.querySelector('.choice-back');
-  const frames=reducedMotion()?[{opacity:0},{opacity:1}]:[{opacity:0,transform:'translateY(24px)'},{opacity:1,transform:'translateY(0)'}];
-  // The page scrolls, not the inline dialog. Keep its height stable during the handover.
-  const arriving=curtain(sheet,frames,{duration:2800,easing:'cubic-bezier(.45,0,.55,1)'});
-  const reposition=Math.abs(entryStage.getBoundingClientRect().top)>100?glideTo(entryStage):Promise.resolve();
-  clearExit();clearExit=()=>{};
-  [clearEntry]=await Promise.all([arriving,reposition]);
-  sheet.inert=false;target.focus({preventScroll:true});
- }finally{clearExit();clearEntry();sheet.style.minHeight=previousMinHeight;sheet.inert=false;changingView=false;}
+ if(changingView||next===view)return;
+ // Reveal the destination immediately; animation must never hide or disable it.
+ sheet.getAnimations().forEach(animation=>animation.cancel());
+ sheet.classList.remove('museum-curtain-leaving','museum-curtain-arriving');
+ sheet.inert=false;
+ applyView(next);
+ entryStage.scrollIntoView({behavior:'instant',block:'start'});
+ const target=next==='choices'?dialog.querySelector('[data-editions]'):dialog.querySelector('.choice-back');
+ target.focus({preventScroll:true});
+ if(!reducedMotion())dissolveIn();
 }
 async function revealEditions(){
  const editions=dialog.querySelector('[data-editions]');if(editions.disabled||changingView)return;editions.disabled=true;changingView=true;sheet.inert=true;
@@ -126,7 +120,7 @@ dialog.querySelector('.choice-interest').onclick=()=>{if(!form.elements.message.
 dialog.querySelector('.choice-back').onclick=()=>showView(view==='form'?'original':view==='original'?'preview':'choices');
 dialog.addEventListener('cancel',event=>{event.preventDefault();if(view!=='choices')showView(view==='form'?'original':view==='original'?'preview':'choices');});
 dialog.addEventListener('close',()=>{returnFocus?.focus({preventScroll:true});});
-form.addEventListener('submit',async event=>{event.preventDefault();if(pending||!form.reportValidity())return;const data=new FormData(form);data.set('artwork',work.title+' — original artwork');data.set('request_type','Acquisition enquiry and proposed offer');data.set('_subject','Acquisition enquiry: '+work.title+' — Original');data.set('_replyto',String(data.get('email')||''));data.set('language',lang());pending=true;failed=false;submit.disabled=true;translate();try{const response=await fetch(form.action,{method:'POST',body:data,headers:{Accept:'application/json'}});if(!response.ok)throw new Error('Submission failed');sent=true;form.hidden=true;}catch{failed=true;}finally{pending=false;submit.disabled=false;translate();}});
+form.addEventListener('submit',async event=>{event.preventDefault();if(pending||!form.reportValidity())return;const data=new FormData(form);data.set('artwork',work.title+' — original artwork');data.set('product',work.title+' — Original artwork');data.set('website',location.hostname);data.set('request_type','Acquisition enquiry and proposed offer');data.set('_subject','Purchase Inquiry: '+work.title+' — Original artwork');data.set('_replyto',String(data.get('email')||''));data.set('language',lang());pending=true;failed=false;submit.disabled=true;translate();try{const response=await fetch(form.action,{method:'POST',body:data,headers:{Accept:'application/json'}});if(!response.ok)throw new Error('Submission failed');const result=await response.json();if(result.ok!==true)throw new Error('Submission not confirmed');sent=true;form.hidden=true;}catch{failed=true;}finally{pending=false;submit.disabled=false;translate();}});
 // The collection curtain is in the document from the beginning: no observer,
 // scroll lock, top-layer swap, or second scroll container at its threshold.
 function maybeOpen(){}
