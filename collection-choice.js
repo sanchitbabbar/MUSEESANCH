@@ -77,21 +77,24 @@ function applyView(next){
  options.hidden=next!=='choices';preview.hidden=next!=='preview';original.hidden=next!=='original';formView.hidden=next!=='form';
  translate();requestAnimationFrame(updateOriginalsHint);
 }
-async function showView(next){
+function showView(next){
  if(changingView||next===view)return;
- changingView=true;
  cancelGlide();
- sheet.getAnimations().forEach(animation=>animation.cancel());
- sheet.classList.remove('museum-curtain-leaving','museum-curtain-arriving');
+ // Navigation must never wait for a fade or leave the incoming collection transparent.
+ try{sheet.getAnimations?.().forEach(animation=>animation.cancel());}catch{}
+ sheet.classList.remove('museum-curtain-leaving','museum-curtain-arriving','collection-view-arriving');
  sheet.inert=false;
- try{
-  await window.museeMotion.swap(sheet,()=>{
-   applyView(next);
-   entryStage.scrollIntoView({behavior:'instant',block:'start'});
-   const target=next==='choices'?dialog.querySelector('[data-editions]'):dialog.querySelector('.choice-back');
-   target.focus({preventScroll:true});
-  });
- }finally{sheet.inert=false;changingView=false;}
+ applyView(next);
+ // Older mobile Safari accepts auto/smooth, but can reject instant. Override CSS smooth scrolling for this handover.
+ const root=document.documentElement,previousScroll=root.style.scrollBehavior;
+ root.style.scrollBehavior='auto';
+ try{entryStage.scrollIntoView({behavior:'auto',block:'start'});}finally{root.style.scrollBehavior=previousScroll;}
+ const target=next==='choices'?dialog.querySelector('[data-editions]'):dialog.querySelector('.choice-back');
+ target.focus({preventScroll:true});
+ if(!reducedMotion()){
+  void sheet.offsetWidth;
+  sheet.classList.add('collection-view-arriving');
+ }
 }
 async function revealEditions(){
  const editions=dialog.querySelector('[data-editions]');if(editions.disabled||changingView)return;editions.disabled=true;changingView=true;sheet.inert=true;

@@ -182,3 +182,12 @@
  .collection-choice[data-view="form"] .choice-sheet{grid-row:1;align-self:center;margin:24px auto}
  .collection-choice[data-view="form"] .choice-footer{grid-row:2}
 }
+
+/* Originals stay visible while changing views, including on mobile WebKit. */
+.collection-view-arriving{animation:collection-visible-arrival .45s ease-out!important}
+@keyframes collection-visible-arrival{from{opacity:.82}to{opacity:1}}
+@media(max-width:700px){
+ .choice-invitation-scroll{max-height:none;overflow:visible;mask-image:none!important;-webkit-mask-image:none!important}
+ .choice-more-originals[aria-hidden="true"]{display:none}
+}
+@media(prefers-reduced-motion:reduce){.collection-view-arriving{animation:none!important}}
