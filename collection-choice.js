@@ -54,8 +54,13 @@ function updateOriginalsHint(){const more=invitationList.scrollHeight-invitation
 invitationList.addEventListener('scroll',updateOriginalsHint,{passive:true});new ResizeObserver(updateOriginalsHint).observe(invitationList);
 moreOriginals.onclick=()=>invitationList.scrollBy({top:180,behavior:'smooth'});
 
-preview.querySelectorAll('.choice-attend').forEach((button,index)=>button.onclick=()=>{if(changingView)return;work=acquisitionWorks[index];form.elements.message.value='';showView('original');});
+preview.querySelectorAll('.choice-attend').forEach((button,index)=>button.onclick=()=>{if(changingView)return;work=acquisitionWorks[index];resetOriginalRequest();showView('original');});
 const options=dialog.querySelector('.collection-choice-options'),original=dialog.querySelector('.choice-original'),formView=dialog.querySelector('.choice-form-view'),form=dialog.querySelector('form'),status=dialog.querySelector('.choice-status'),submit=dialog.querySelector('.choice-submit');
+let requestRevision=0;
+function resetOriginalRequest(){
+ requestRevision++;pending=false;sent=false;failed=false;
+ form.reset();form.hidden=false;submit.disabled=false;
+}
 let returningIntro=false;
 let view='choices',shown=false,pending=false,sent=false,failed=false,previousOverflow='',returnFocus;
 const lang=()=>document.documentElement.lang==='en'?'en':'fr';
@@ -120,7 +125,7 @@ dialog.querySelector('.choice-interest').onclick=()=>{if(!form.elements.message.
 dialog.querySelector('.choice-back').onclick=()=>showView(view==='form'?'original':view==='original'?'preview':'choices');
 dialog.addEventListener('cancel',event=>{event.preventDefault();if(view!=='choices')showView(view==='form'?'original':view==='original'?'preview':'choices');});
 dialog.addEventListener('close',()=>{returnFocus?.focus({preventScroll:true});});
-form.addEventListener('submit',async event=>{event.preventDefault();if(pending||!form.reportValidity())return;const data=new FormData(form);data.set('artwork',work.title+' — original artwork');data.set('product',work.title+' — Original artwork');data.set('website',location.hostname);data.set('request_type','Acquisition enquiry and proposed offer');data.set('_subject','Purchase Inquiry: '+work.title+' — Original artwork');data.set('_replyto',String(data.get('email')||''));data.set('language',lang());pending=true;failed=false;submit.disabled=true;translate();try{const response=await fetch(form.action,{method:'POST',body:data,headers:{Accept:'application/json'}});if(!response.ok)throw new Error('Submission failed');const result=await response.json();if(result.ok!==true)throw new Error('Submission not confirmed');sent=true;form.hidden=true;}catch{failed=true;}finally{pending=false;submit.disabled=false;translate();}});
+form.addEventListener('submit',async event=>{event.preventDefault();if(pending||!form.reportValidity())return;const revision=requestRevision;const data=new FormData(form);data.set('artwork',work.title+' — original artwork');data.set('product',work.title+' — Original artwork');data.set('website',location.hostname);data.set('request_type','Acquisition enquiry and proposed offer');data.set('_subject','Purchase Inquiry: '+work.title+' — Original artwork');data.set('_replyto',String(data.get('email')||''));data.set('language',lang());pending=true;failed=false;submit.disabled=true;translate();try{const response=await fetch(form.action,{method:'POST',body:data,headers:{Accept:'application/json'}});if(!response.ok)throw new Error('Submission failed');const result=await response.json();if(result.ok!==true)throw new Error('Submission not confirmed');if(revision===requestRevision){sent=true;form.hidden=true;}}catch{if(revision===requestRevision)failed=true;}finally{if(revision===requestRevision){pending=false;submit.disabled=false;translate();}}});
 // The collection curtain is in the document from the beginning: no observer,
 // scroll lock, top-layer swap, or second scroll container at its threshold.
 function maybeOpen(){}
