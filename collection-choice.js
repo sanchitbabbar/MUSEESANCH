@@ -10,14 +10,15 @@ const reducedMotion=()=>matchMedia('(prefers-reduced-motion: reduce)').matches;
 let scrollFrame=0,cancelGlide=()=>{};
 function glideTo(element){
  cancelGlide();
- if(reducedMotion()){element.scrollIntoView({behavior:'instant'});return Promise.resolve(true);}
+ const root=document.documentElement,previousScroll=root.style.scrollBehavior;root.style.scrollBehavior='auto';
+ if(reducedMotion()){try{element.scrollIntoView({behavior:'auto'});}finally{root.style.scrollBehavior=previousScroll;}return Promise.resolve(true);}
  const start=scrollY,end=start+element.getBoundingClientRect().top;
  return new Promise(resolve=>{
   const began=performance.now(),duration=3000;
-  const cleanup=()=>{removeEventListener('wheel',cancel);removeEventListener('touchstart',cancel);removeEventListener('keydown',cancel);cancelGlide=()=>{};};
+  const cleanup=()=>{root.style.scrollBehavior=previousScroll;removeEventListener('wheel',cancel);removeEventListener('touchstart',cancel);removeEventListener('keydown',cancel);cancelGlide=()=>{};};
   const cancel=()=>{cancelAnimationFrame(scrollFrame);cleanup();resolve(false);};cancelGlide=cancel;
   addEventListener('wheel',cancel,{passive:true});addEventListener('touchstart',cancel,{passive:true});addEventListener('keydown',cancel);
-  function step(now){const t=Math.min(1,(now-began)/duration),e=t*t*t*(t*(t*6-15)+10);scrollTo({top:start+(end-start)*e,behavior:'instant'});if(t<1)scrollFrame=requestAnimationFrame(step);else{cleanup();resolve(true);}}
+  function step(now){const t=Math.min(1,(now-began)/duration),e=t*t*t*(t*(t*6-15)+10);scrollTo({top:start+(end-start)*e,behavior:'auto'});if(t<1)scrollFrame=requestAnimationFrame(step);else{cleanup();resolve(true);}}
   scrollFrame=requestAnimationFrame(step);
  });
 }
@@ -71,6 +72,8 @@ preview.querySelectorAll('.choice-attend').forEach((button,index)=>{button.query
 const collectionTitle=document.title;
 const originalSlugs=['celle-qui-se-connait','deepa','instar'];
 function syncOriginalAddress(){const url=new URL(location.href);if(view==='original'||view==='form'){url.searchParams.set('original',originalSlugs[acquisitionWorks.indexOf(work)]);document.title=work.title+' — '+(lang()==='fr'?'Œuvre originale':'Original artwork')+' | MUSÉE SANCH';}else{url.searchParams.delete('original');document.title=collectionTitle;}try{history.replaceState(history.state,'',url);}catch{} }
+const warmOriginals=()=>{for(const slug of originalSlugs){const image=new Image();image.src='./images/auctions/'+slug+'-original.webp';image.decode?.().catch(()=>{});}};
+if('requestIdleCallback' in window)window.requestIdleCallback(warmOriginals,{timeout:1200});else setTimeout(warmOriginals,700);
 let changingView=false;
 function applyView(next){
  view=next;syncOriginalAddress();dialog.dataset.view=next;
@@ -79,6 +82,7 @@ function applyView(next){
 }
 function showView(next){
  if(changingView||next===view)return;
+ const release=typeof window!=='undefined'&&window.museeMotion?.hold?window.museeMotion.hold(sheet):()=>{};
  cancelGlide();
  // Navigation must never wait for a fade or leave the incoming collection transparent.
  try{sheet.getAnimations?.().forEach(animation=>animation.cancel());}catch{}
@@ -95,15 +99,17 @@ function showView(next){
   void sheet.offsetWidth;
   sheet.classList.add('collection-view-arriving');
  }
+ release();
 }
 async function revealEditions(){
  const editions=dialog.querySelector('[data-editions]');if(editions.disabled||changingView)return;editions.disabled=true;changingView=true;sheet.inert=true;
  let clear=()=>{};
  try{
-  clear=await curtain(sheet,reducedMotion()?[{opacity:1},{opacity:0}]:[{opacity:1,transform:'translateY(0)'},{opacity:0,transform:'translateY(-35px)'}],{duration:2200,easing:'cubic-bezier(.45,0,.55,1)'});
+  clear=await curtain(sheet,reducedMotion()?[{opacity:1},{opacity:0}]:[{opacity:1,transform:'translateY(0)'},{opacity:0,transform:'translateY(-35px)'}],{duration:550,easing:'cubic-bezier(.45,0,.55,1)'});
   document.documentElement.classList.remove('collection-pending');document.documentElement.classList.add('collection-revealing');
   entryStage.hidden=true;cancelGlide();
-  scrollTo({top:scrollY+collectionHeader.getBoundingClientRect().top,behavior:'instant'});
+  const root=document.documentElement,previousScroll=root.style.scrollBehavior;root.style.scrollBehavior='auto';
+  try{scrollTo({top:scrollY+collectionHeader.getBoundingClientRect().top,behavior:'auto'});}finally{root.style.scrollBehavior=previousScroll;}
   dialog.close();document.getElementById('works-tab').focus({preventScroll:true});
  }finally{clear();sheet.inert=false;editions.disabled=false;changingView=false;}
 }
@@ -138,8 +144,8 @@ function maybeOpen(){}
 shown=true;dialog.show();
 new MutationObserver(()=>{translate();syncOriginalAddress();requestAnimationFrame(maybeOpen);}).observe(document.documentElement,{attributes:true,attributeFilter:['lang']});
 translate();
-const requestedOriginal=originalSlugs.indexOf(new URLSearchParams(location.search).get('original'));if(requestedOriginal>=0){work=acquisitionWorks[requestedOriginal];applyView('original');dissolveIn();requestAnimationFrame(()=>entryStage.scrollIntoView({behavior:'instant'}));}
-if(location.hash==='#collection')requestAnimationFrame(()=>entryStage.scrollIntoView({behavior:'instant'}));
+const requestedOriginal=originalSlugs.indexOf(new URLSearchParams(location.search).get('original'));if(requestedOriginal>=0){work=acquisitionWorks[requestedOriginal];applyView('original');dissolveIn();requestAnimationFrame(()=>entryStage.scrollIntoView({behavior:'auto'}));}
+if(location.hash==='#collection')requestAnimationFrame(()=>entryStage.scrollIntoView({behavior:'auto'}));
 
 // Scroll cues guide the next movement; their labels never pulse.
 const downCue=document.querySelector('.prologue-scroll'),upCue=dialog.querySelector('.choice-scroll-up');

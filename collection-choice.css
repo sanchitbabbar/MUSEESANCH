@@ -203,3 +203,12 @@
  .collection-choice .choice-submit{background:rgba(255,255,255,.045)}
  .collection-choice .choice-submit:hover{background:rgba(255,255,255,.075)}
 }
+
+/* Cross-dissolve live views over an inert outgoing layer; the base never stays hidden. */
+.collection-view-arriving{animation:collection-visible-arrival .75s cubic-bezier(.22,1,.36,1)!important}
+@keyframes collection-visible-arrival{from{opacity:.16}to{opacity:1}}
+@media(prefers-reduced-motion:no-preference){
+ .collection-revealing #collection,.collection-revealing #artwork-grid{animation:museum-veil-arrive .75s cubic-bezier(.22,1,.36,1) both}
+}
+
+@media(prefers-reduced-motion:reduce){.collection-view-arriving{animation:none!important}}

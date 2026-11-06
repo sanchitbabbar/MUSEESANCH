@@ -8,7 +8,7 @@ function setup(reduced=false){
   location:{href:'https://museesanch.com/artworks',assign(){},replace(){}},
   document:{body:{classList:{add:c=>classes.add(c),remove:c=>classes.delete(c)},addEventListener(){}},documentElement:{classList:{add(){}}},addEventListener:(name,fn)=>handlers[name]=fn},addEventListener:(name,fn)=>handlers[name]=fn};
  vm.runInNewContext(fs.readFileSync(require('node:path').join(__dirname,'../museum-motion.js'),'utf8'),context);
- return {motion:context.window.museeMotion,handlers,classes};
+ return {motion:context.window.museeMotion,handlers,classes,document:context.document};
 }
 test('cancelled and unavailable animations still complete the screen change',async()=>{
  for(const behavior of ['cancelled','unavailable']){
@@ -44,4 +44,16 @@ test('legal contents expand and collapse without leaving clipped content',async(
  const details={open:false,children:[{tagName:'SUMMARY'},content]};
  await motion.disclose(details);assert.equal(details.open,true);assert.equal(content.style.overflow,'visible');
  await motion.disclose(details);assert.equal(details.open,false);assert.equal(content.style.overflow,'visible');
+});
+
+test('outgoing paint layers are inert and removed after interrupted fades',async()=>{
+ const {motion,document}=setup();let attached=0,removed=0;
+ const layer={style:{},dataset:{},setAttribute(name,value){this[name]=value;},append(){},remove(){removed++;},animate(){return {finished:Promise.reject(Error('cancelled')),cancel(){}};}};
+ document.createElement=()=>layer;document.body.append=()=>attached++;
+ const copy={style:{cssText:''},removeAttribute(){},querySelectorAll:()=>[],classList:{remove(){}}};
+ const element={parentElement:{className:'collection-choice',dataset:{view:'original'}},getBoundingClientRect:()=>({left:20,top:30,width:352,height:500}),cloneNode:()=>copy};
+ const release=motion.hold(element);
+ assert.equal(attached,1);assert.equal(layer.inert,true);assert.equal(layer['aria-hidden'],'true');
+ release();await new Promise(resolve=>setTimeout(resolve,0));assert.ok(removed>0);
+ assert.doesNotThrow(()=>motion.hold({getBoundingClientRect(){throw Error('unavailable');}})());
 });

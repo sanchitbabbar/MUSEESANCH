@@ -10,6 +10,34 @@
    await Promise.race([animation.finished.catch(()=>{}),new Promise(resolve=>{timer=setTimeout(resolve,duration+120);})]);
   }catch{}finally{clearTimeout(timer);animation?.cancel();}
  }
+ // Keep the outgoing view on a temporary, inert paint layer while the live view changes.
+ // DOM navigation stays synchronous; failed or interrupted animation only removes the layer.
+ const heldViews=new WeakMap();
+ function hold(element){
+  if(!element||reduced())return ()=>{};
+  heldViews.get(element)?.();
+  let layer;
+  try{
+   const rect=element.getBoundingClientRect();
+   if(!rect.width||!rect.height)return ()=>{};
+   const parent=element.parentElement;
+   layer=document.createElement('div');layer.className=parent.className;
+   if(parent.dataset.view)layer.dataset.view=parent.dataset.view;
+   layer.setAttribute('aria-hidden','true');layer.inert=true;
+   layer.style.cssText='position:fixed!important;inset:0!important;width:100%!important;height:100%!important;min-height:0!important;max-height:none!important;display:block!important;overflow:hidden!important;pointer-events:none!important;z-index:2147483000!important;background:transparent!important;opacity:1;transform:none!important;transition:none!important;';
+   const copy=element.cloneNode(true);copy.removeAttribute('id');
+   copy.querySelectorAll('[id]').forEach(node=>node.removeAttribute('id'));
+   copy.querySelectorAll('*').forEach(node=>{node.style.animation='none';});
+   copy.classList.remove('collection-view-arriving','museum-curtain-arriving','museum-curtain-leaving');
+   copy.style.cssText+=';position:absolute!important;left:'+rect.left+'px!important;top:'+rect.top+'px!important;width:'+rect.width+'px!important;min-height:'+rect.height+'px!important;margin:0!important;animation:none!important;opacity:1!important;transform:none!important;';
+   layer.append(copy);document.body.append(layer);
+   const remove=()=>{layer.remove();if(heldViews.get(element)===remove)heldViews.delete(element);};
+   heldViews.set(element,remove);
+   // A separate watchdog also covers a caller interrupted before releasing its layer.
+   setTimeout(remove,1000);
+   return ()=>{animate(layer,[{opacity:1},{opacity:0}],550).finally(remove);};
+  }catch{layer?.remove();return ()=>{};}
+ }
  const closing=new WeakSet();
  async function close(dialog){
   if(!dialog?.open||closing.has(dialog))return;
@@ -49,7 +77,7 @@
   if(replace)location.replace(url);else location.assign(url);
   setTimeout(reset,1800);
  }
- window.museeMotion={animate,close,swap,navigate,disclose};
+ window.museeMotion={animate,close,swap,navigate,disclose,hold};
  document.documentElement.classList.add('museum-motion-ready');
  document.body.classList.add('museum-page-arriving');
  document.body.addEventListener('animationend',event=>{if(event.animationName==='museum-page-arrive')document.body.classList.remove('museum-page-arriving');});
