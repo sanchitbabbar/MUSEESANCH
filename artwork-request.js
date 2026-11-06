@@ -16,7 +16,7 @@ function restoreRequest(){
  if(document.getElementById('artwork-detail').open)button.focus({preventScroll:true});
 }
 let closingRequest=false;
-async function closeRequestSoftly(){if(closingRequest||!requestDialog.open)return;closingRequest=true;const fade=requestDialog.animate([{opacity:1},{opacity:0}],{duration:600,easing:'ease-in-out'});await fade.finished.catch(()=>{});requestDialog.close();fade.cancel();closingRequest=false;}
+async function closeRequestSoftly(){if(closingRequest||!requestDialog.open)return;closingRequest=true;requestDialog.classList.add('is-closing');const fade=requestDialog.animate([{opacity:1,transform:'scale(1)'},{opacity:0,transform:'scale(.95)'}],{duration:matchMedia('(prefers-reduced-motion: reduce)').matches?0:550,easing:'cubic-bezier(.22,1,.36,1)'});await fade.finished.catch(()=>{});requestDialog.close();fade.cancel();requestDialog.classList.remove('is-closing');closingRequest=false;}
 requestDialog.addEventListener('cancel',event=>{event.preventDefault();closeRequestSoftly();});
 closeRequest.addEventListener('click',closeRequestSoftly);
 requestDialog.addEventListener('close',restoreRequest);

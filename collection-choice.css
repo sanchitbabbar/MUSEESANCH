@@ -161,3 +161,24 @@
  .choice-sheet:focus-within{animation:none!important;transform:none}
  .choice-form-view{margin:0 auto}
 }
+
+/* Match the reference contact card on phones, including its compact filled fields. */
+@media(max-width:700px){
+ .collection-choice[data-view="form"] .choice-sheet{width:calc(100% - 32px);max-width:352px;min-height:0;margin:24px auto 0;padding:64px 24px 24px;border:0;border-radius:8px;background:linear-gradient(180deg,rgba(255,255,255,.05),transparent),rgba(0,0,0,.6)}
+ .choice-form-view h2{text-align:left;margin:0 0 24px;font-size:18px;line-height:1.5;letter-spacing:.05em}
+ .choice-form-view label{border:0;padding:0;margin:0 0 16px}
+ .choice-form-view label span{position:absolute;width:1px;height:1px;overflow:hidden;clip-path:inset(50%);white-space:nowrap}
+ .choice-form-view input,.choice-form-view textarea{border:0;border-radius:6px;padding:10px 16px;margin:0;background:rgba(255,255,255,.05);font:300 16px/1.55 Montserrat,sans-serif;letter-spacing:normal;transition:background .3s ease}
+ .choice-form-view input:focus,.choice-form-view textarea:focus{background:rgba(255,255,255,.1)}
+ .choice-form-view input::placeholder,.choice-form-view textarea::placeholder{color:rgba(255,255,255,.3);opacity:1}
+ .choice-form-view textarea{min-height:112px;resize:none}
+ .collection-choice .choice-submit{border-radius:6px;background:rgba(255,255,255,.1);padding:10px 16px;font-size:12px;line-height:1.6;letter-spacing:.2em}
+ .collection-choice .choice-submit:hover{background:rgba(255,255,255,.2)}
+ .choice-privacy{font-size:10px;line-height:1.8}
+}
+
+@media(max-width:700px){
+ .collection-choice[open][data-view="form"]{display:grid;grid-template-rows:minmax(100svh,auto) auto}
+ .collection-choice[data-view="form"] .choice-sheet{grid-row:1;align-self:center;margin:24px auto}
+ .collection-choice[data-view="form"] .choice-footer{grid-row:2}
+}
