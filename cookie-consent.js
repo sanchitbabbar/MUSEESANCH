@@ -14,8 +14,8 @@
  banner.querySelector('button').textContent=fr?'Essentiels uniquement':'Essential only';}
  let stored=false;try{stored=localStorage.getItem(key)==='essential';}catch{}
  function show(){translate();banner.hidden=false;reopen.hidden=true;}
- function close(){try{localStorage.setItem(key,'essential');}catch{}banner.hidden=true;reopen.hidden=false;}
- banner.querySelector('button').addEventListener('click',()=>{close();reopen.focus();});reopen.addEventListener('click',()=>{show();banner.querySelector('button').focus();});
+ let closing=false;async function close(){if(closing)return;closing=true;try{localStorage.setItem(key,'essential');}catch{}await window.museeMotion.animate(banner,[{opacity:1},{opacity:0}],550);banner.hidden=true;reopen.hidden=false;closing=false;reopen.focus({preventScroll:true});}
+ banner.querySelector('button').addEventListener('click',()=>{close();});reopen.addEventListener('click',()=>{show();banner.querySelector('button').focus();});
  window.addEventListener('musee:open-cookie-preferences',show);
  new MutationObserver(translate).observe(document.documentElement,{attributes:true,attributeFilter:['lang']});
  translate();if(!stored||new URLSearchParams(location.search).has('previewCookies'))show();

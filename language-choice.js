@@ -11,7 +11,7 @@
   if(persist){userSelected=true;try{localStorage.setItem(key,lang);}catch{}}
   const path=location.pathname;const base=path.split('/').pop();
   const policy=/^(privacy-policy|terms|legal-notice)(-en)?\.html$/.exec(base);
-  if(policy){const target=policy[1]+(lang==='en'?'-en':'')+'.html';if(target!==base){location.replace('./'+target+location.hash);return;}}
+  if(policy){const target=policy[1]+(lang==='en'?'-en':'')+'.html';if(target!==base){window.museeMotion.navigate('./'+target+location.hash,true);return;}}
   document.documentElement.lang=lang;
   const title=document.querySelector('.eyebrow.ode'),intro=document.querySelector('.intro'),entry=document.querySelector('.museum-entry');
   if(title)title.textContent=lang==='fr'?'Une Ode à la Féminité':'An Ode to Femininity';
@@ -22,7 +22,8 @@
   const copyright=document.querySelector('footer .mda-stamp + p');if(copyright){copyright.replaceChildren(document.createTextNode('ⓒ 2026 SANCHIT BABBAR'),document.createElement('br'),document.createTextNode(lang==='fr'?'TOUS DROITS RÉSERVÉS.':'ALL RIGHTS RESERVED.'));}
   window.dispatchEvent(new CustomEvent('musee:language',{detail:lang}));
  }
- chooser.querySelectorAll('[data-choice]').forEach(b=>b.addEventListener('click',()=>{chooser.close();apply(b.dataset.choice,true);}));
+ chooser.querySelectorAll('[data-choice]').forEach(b=>b.addEventListener('click',async()=>{await window.museeMotion.close(chooser);apply(b.dataset.choice,true);}));
+ chooser.addEventListener('cancel',event=>{event.preventDefault();window.museeMotion.close(chooser);});
  reopen.addEventListener('click',()=>chooser.showModal());
  document.querySelectorAll('[data-language]').forEach(b=>b.addEventListener('click',()=>apply(b.dataset.language,true)));
  document.querySelectorAll('.policy-header nav a').forEach(a=>{if(a.textContent==='EN'||a.textContent==='FR')a.addEventListener('click',()=>{try{localStorage.setItem(key,a.textContent.toLowerCase());}catch{}});});

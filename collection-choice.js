@@ -10,6 +10,7 @@ const reducedMotion=()=>matchMedia('(prefers-reduced-motion: reduce)').matches;
 let scrollFrame=0,cancelGlide=()=>{};
 function glideTo(element){
  cancelGlide();
+ if(reducedMotion()){element.scrollIntoView({behavior:'instant'});return Promise.resolve(true);}
  const start=scrollY,end=start+element.getBoundingClientRect().top;
  return new Promise(resolve=>{
   const began=performance.now(),duration=3000;
@@ -22,10 +23,8 @@ function glideTo(element){
 }
 // A cancelled or unavailable animation must never strand a collection behind its curtain.
 async function curtain(element,frames,options){
- let animation,timer;
- try{animation=element.animate(frames,{...options,fill:'forwards'});await Promise.race([animation.finished.catch(()=>{}),new Promise(resolve=>{timer=setTimeout(resolve,options.duration+250);})]);}
- catch{}finally{clearTimeout(timer);}
- return ()=>animation?.cancel();
+ await window.museeMotion.animate(element,frames,Math.min(options.duration,850));
+ return ()=>{};
 }
 function dissolveIn(){if(reducedMotion()){sheet.animate([{opacity:0},{opacity:1}],{duration:2800,easing:'ease-in-out'});return;}sheet.animate([{opacity:0,transform:'translateY(24px)'},{opacity:1,transform:'translateY(0)'}],{duration:2800,easing:'cubic-bezier(.45,0,.55,1)'});}
 
@@ -80,22 +79,19 @@ function applyView(next){
 }
 async function showView(next){
  if(changingView||next===view)return;
+ changingView=true;
+ cancelGlide();
  sheet.getAnimations().forEach(animation=>animation.cancel());
  sheet.classList.remove('museum-curtain-leaving','museum-curtain-arriving');
  sheet.inert=false;
- if(view==='form'&&!reducedMotion()){
-  changingView=true;
-  const fade=sheet.animate([{opacity:1,transform:'scale(1)'},{opacity:0,transform:'scale(.95)'}],{duration:550,easing:'cubic-bezier(.22,1,.36,1)'});
-  try{await fade.finished;}catch{}finally{fade.cancel();changingView=false;}
- }
- applyView(next);
- entryStage.scrollIntoView({behavior:'instant',block:'start'});
- const target=next==='choices'?dialog.querySelector('[data-editions]'):dialog.querySelector('.choice-back');
- target.focus({preventScroll:true});
- if(!reducedMotion()){
-  if(next==='form')sheet.animate([{opacity:0,transform:'scale(.95)'},{opacity:1,transform:'scale(1)'}],{duration:550,easing:'cubic-bezier(.22,1,.36,1)'});
-  else dissolveIn();
- }
+ try{
+  await window.museeMotion.swap(sheet,()=>{
+   applyView(next);
+   entryStage.scrollIntoView({behavior:'instant',block:'start'});
+   const target=next==='choices'?dialog.querySelector('[data-editions]'):dialog.querySelector('.choice-back');
+   target.focus({preventScroll:true});
+  });
+ }finally{sheet.inert=false;changingView=false;}
 }
 async function revealEditions(){
  const editions=dialog.querySelector('[data-editions]');if(editions.disabled||changingView)return;editions.disabled=true;changingView=true;sheet.inert=true;

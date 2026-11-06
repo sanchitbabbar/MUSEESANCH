@@ -18,21 +18,25 @@ for (const [index, work] of designs.entries()) {
   document.getElementById('detail-price').textContent=(language==='fr'?'À partir de €':'From €')+work.basePrice;
   document.getElementById('detail-sizes').textContent=work.sizes.map(size=>size.dimensions).join(' · ');
   document.getElementById('frame-toggle').setAttribute('aria-pressed','false');
-  dialog.showModal(); dialog.animate([{opacity:0},{opacity:1}],{duration:650,easing:'cubic-bezier(.45,0,.55,1)'}); document.body.style.overflow='hidden';
+  dialog.showModal(); document.body.style.overflow='hidden';
  });
 }
 let closingArtworkDetail=false;
-async function closeArtworkDetail(){if(closingArtworkDetail)return;closingArtworkDetail=true;const exit=dialog.animate([{opacity:1},{opacity:0}],{duration:600,easing:'ease-in-out'});await exit.finished.catch(()=>{});dialog.close();exit.cancel();closingArtworkDetail=false;}
+async function closeArtworkDetail(){if(closingArtworkDetail)return;closingArtworkDetail=true;try{await window.museeMotion.close(dialog);}finally{closingArtworkDetail=false;}}
 dialog.addEventListener('cancel',event=>{event.preventDefault();closeArtworkDetail();});
 document.getElementById('close-detail').addEventListener('click',()=>closeArtworkDetail());
 dialog.addEventListener('click',e=>{if(e.target===dialog)closeArtworkDetail();});
 dialog.addEventListener('close',()=>{document.body.style.overflow='';returnTo?.focus({preventScroll:true});});
-function setFramed(active) {
+let changingFrame=false;
+async function setFramed(active) {
+ if(changingFrame)return;changingFrame=true;
+ try{await window.museeMotion.swap(document.getElementById('detail-image'),()=>{
  const image=document.getElementById('detail-image');
  image.classList.toggle('framed', active);
  image.closest('.image-panel').classList.toggle('is-framed', active);
  document.getElementById('frame-toggle').setAttribute('aria-pressed',String(active));
  document.getElementById('artwork-toggle').setAttribute('aria-pressed',String(!active));
+ });}finally{changingFrame=false;}
 }
 document.getElementById('frame-toggle').addEventListener('click',()=>setFramed(true));
 document.getElementById('artwork-toggle').addEventListener('click',()=>setFramed(false));
@@ -66,8 +70,9 @@ function updateLanguage(){
  renderAbout();
 }
 for(const button of document.querySelectorAll('[data-language]'))button.addEventListener('click',()=>{language=button.dataset.language;updateLanguage();});
-function setTab(tab){activeTab=tab;grid.hidden=tab!=='works';document.getElementById('about-gallery').hidden=tab!=='about';
- for(const name of ['works','about'])document.getElementById(name+'-tab').setAttribute('aria-selected',String(name===tab));}
+let changingTab=false;
+async function setTab(tab){if(changingTab||activeTab===tab)return;changingTab=true;const about=document.getElementById('about-gallery');try{await window.museeMotion.swap(activeTab==='works'?grid:about,()=>{activeTab=tab;grid.hidden=tab!=='works';document.getElementById('about-gallery').hidden=tab!=='about';
+ for(const name of ['works','about'])document.getElementById(name+'-tab').setAttribute('aria-selected',String(name===tab));},()=>tab==='works'?grid:about);}finally{changingTab=false;}}
 document.getElementById('works-tab').addEventListener('click',()=>setTab('works'));
 document.getElementById('about-tab').addEventListener('click',()=>setTab('about'));
 document.querySelector('header .back').addEventListener('click',e=>{if(activeTab==='about'){e.preventDefault();setTab('works');}});
