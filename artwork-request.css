@@ -86,3 +86,13 @@
 @media(max-width:700px){
  .request-dialog{inset:16px;margin:auto;max-height:calc(100svh - 32px)}
 }
+
+/* Quieter mobile enquiry surfaces. */
+@media(max-width:700px){
+ .request-dialog{background:linear-gradient(180deg,rgba(255,255,255,.025),transparent),rgba(0,0,0,.88)}
+ .request-dialog #request-form input,.request-dialog #request-form textarea{background:rgba(255,255,255,.025)}
+ .request-dialog #request-form input:focus,.request-dialog #request-form textarea:focus{background:rgba(255,255,255,.045)}
+ .request-dialog #request-form input::placeholder,.request-dialog #request-form textarea::placeholder{color:rgba(255,255,255,.4)}
+ .request-dialog #send-request{background:rgba(255,255,255,.045)}
+ .request-dialog #send-request:hover{background:rgba(255,255,255,.075)}
+}

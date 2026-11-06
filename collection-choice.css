@@ -193,3 +193,13 @@
 @media(prefers-reduced-motion:reduce){.collection-view-arriving{animation:none!important}}
 
 .choice-provenance{display:block;margin-top:4px}
+
+/* Quieter mobile enquiry surfaces. */
+@media(max-width:700px){
+ .collection-choice[data-view="form"] .choice-sheet{background:linear-gradient(180deg,rgba(255,255,255,.025),transparent),rgba(0,0,0,.88)}
+ .choice-form-view input,.choice-form-view textarea{background:rgba(255,255,255,.025)}
+ .choice-form-view input:focus,.choice-form-view textarea:focus{background:rgba(255,255,255,.045)}
+ .choice-form-view input::placeholder,.choice-form-view textarea::placeholder{color:rgba(255,255,255,.4)}
+ .collection-choice .choice-submit{background:rgba(255,255,255,.045)}
+ .collection-choice .choice-submit:hover{background:rgba(255,255,255,.075)}
+}
