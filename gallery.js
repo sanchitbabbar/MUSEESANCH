@@ -9,7 +9,10 @@ for (const [index, work] of designs.entries()) {
  const meta = document.createElement('div'); meta.className = 'artwork-meta';
  const year = document.createElement('span'); year.textContent = 'Œuvre d’art, ' + work.year;
  const price = document.createElement('span'); price.textContent = 'À partir de €' + work.basePrice;
- meta.append(year, price); card.append(img,title,meta); grid.append(card);
+ meta.append(year, price); if(work.id === 'le-sillage-epure'){
+  const preview=document.createElement('div');preview.style.cssText='overflow:hidden;aspect-ratio:3/4';
+  img.style.transform='scale(1.08)';preview.append(img);card.append(preview,title,meta);
+ }else{card.append(img,title,meta);} grid.append(card);
  card.addEventListener('click', () => {
   window.dispatchEvent(new CustomEvent('musee:artwork-selected',{detail:work}));returnTo=card; const image=document.getElementById('detail-image'); image.src='.'+work.image; image.alt=work.title; image.classList.remove('framed'); image.closest('.image-panel').classList.remove('is-framed'); document.getElementById('artwork-toggle').setAttribute('aria-pressed','true');
   document.getElementById('detail-title').textContent=work.title;
