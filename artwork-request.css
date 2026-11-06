@@ -66,3 +66,11 @@
 .request-dialog .request-success[hidden]{display:none!important}
 
 #request-form .request-spam-trap{display:none!important}
+
+/* A stable top edge avoids recentering between fields when the keyboard resizes the viewport. */
+@media(max-width:700px){
+ .request-dialog{position:fixed;inset:24px 0 auto;margin:0 auto;max-height:calc(100dvh - 48px);scroll-padding-block:24px}
+ .request-dialog[open]{animation:request-mobile-appear .2s ease-out}
+ .request-dialog #request-form textarea{resize:none}
+}
+@keyframes request-mobile-appear{from{opacity:0}to{opacity:1}}

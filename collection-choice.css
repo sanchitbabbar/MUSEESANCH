@@ -153,3 +153,11 @@
 /* Reuse the exact Discover light from the introduction. */
 .originals-scroll-light{height:48px;overflow:visible;background:linear-gradient(to top,#fff,transparent);transform-origin:bottom;animation:musee-discover-line 2s ease-in-out infinite}
 .originals-scroll-light::after{display:none;animation:none}
+
+/* Keep mobile inputs at native zoom and the form steady as the keyboard opens. */
+@media(max-width:700px){
+ .choice-form-view input,.choice-form-view textarea{font-size:16px;line-height:1.6;min-width:0;scroll-margin-block:24px}
+ .collection-choice[data-view="form"] .choice-sheet{min-height:calc(100svh - 36px);justify-content:flex-start}
+ .choice-sheet:focus-within{animation:none!important;transform:none}
+ .choice-form-view{margin:0 auto}
+}
