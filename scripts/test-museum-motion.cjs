@@ -29,11 +29,13 @@ test('repeated close presses close a dialog once and clear its closing class',as
  const first=motion.close(dialog);await motion.close(dialog);finish();await first;
  assert.equal(closes,1);assert.equal(classes.size,0);
 });
-test('reduced motion changes content and closes dialogs without animation',async()=>{
- const {motion}=setup(true);let updated=false,closed=false;
- const element={open:true,classList:{add(){},remove(){}},animate(){throw Error('should not animate');},close(){closed=true;}};
+test('reduced motion retains bounded opacity fades without spatial animation',async()=>{
+ const {motion}=setup(true);let updated=false,closed=false;const calls=[];
+ const element={open:true,classList:{add(){},remove(){}},animate(frames,options){calls.push({frames,options});return {finished:Promise.resolve(),cancel(){}};},close(){closed=true;}};
+ await motion.animate(element,[{opacity:0,transform:'translateY(24px)',height:'0px'},{opacity:1,transform:'none',height:'120px'}],750);
  await motion.swap(element,()=>updated=true);await motion.close(element);
- assert.equal(updated,true);assert.equal(closed,true);
+ assert.equal(updated,true);assert.equal(closed,true);assert.ok(calls.length>=4);
+ for(const call of calls){assert.ok(call.options.duration<=400);for(const frame of call.frames)assert.deepEqual(Object.keys(frame),['opacity']);}
 });
 test('initial page arrival is not cut short by the first pageshow event',()=>{
  const {handlers,classes}=setup();handlers.pageshow({persisted:false});assert.equal(classes.has('museum-page-arriving'),true);

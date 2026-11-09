@@ -3,7 +3,8 @@
  const ease='cubic-bezier(.22,1,.36,1)';
  // Always restore the visible base, even if an animation is interrupted or unavailable.
  async function animate(element,frames,duration=650){
-  if(!element||reduced())return;
+  if(!element)return;
+  if(reduced()){frames=frames.map(frame=>({opacity:frame.opacity??1}));duration=Math.min(duration,400);}
   let animation,timer;
   try{
    animation=element.animate(frames,{duration,easing:ease});
@@ -14,7 +15,7 @@
  // DOM navigation stays synchronous; failed or interrupted animation only removes the layer.
  const heldViews=new WeakMap();
  function hold(element){
-  if(!element||reduced())return ()=>{};
+  if(!element)return ()=>{};
   heldViews.get(element)?.();
   let layer;
   try{
@@ -68,8 +69,8 @@
  async function navigate(url,replace=false){
   if(navigating)return;navigating=true;
   try{
-   if(!reduced()){
-    pageAnimation=document.body.animate([{opacity:1},{opacity:0}],{duration:420,easing:ease,fill:'forwards'});
+   {
+    pageAnimation=document.body.animate([{opacity:1},{opacity:0}],{duration:reduced()?350:420,easing:ease,fill:'forwards'});
     await Promise.race([pageAnimation.finished.catch(()=>{}),new Promise(resolve=>setTimeout(resolve,540))]);
    }
   }catch{}

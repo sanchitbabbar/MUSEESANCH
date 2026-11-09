@@ -95,10 +95,8 @@ function showView(next){
  try{entryStage.scrollIntoView({behavior:'auto',block:'start'});}finally{root.style.scrollBehavior=previousScroll;}
  const target=next==='choices'?dialog.querySelector('[data-editions]'):dialog.querySelector('.choice-back');
  target.focus({preventScroll:true});
- if(!reducedMotion()){
-  void sheet.offsetWidth;
-  sheet.classList.add('collection-view-arriving');
- }
+ void sheet.offsetWidth;
+ sheet.classList.add('collection-view-arriving');
  release();
 }
 async function revealEditions(){

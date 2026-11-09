@@ -12,8 +12,13 @@ html{scroll-behavior:smooth}
 @keyframes museum-backdrop-leave{from{opacity:1}to{opacity:0}}
 .museum-motion-ready .artwork-card img{transition:filter .65s ease}
 .museum-motion-ready .musee-cookie-banner{animation-duration:.65s}
+/* Reduced motion keeps quiet opacity fades while omitting spatial movement. */
 @media(prefers-reduced-motion:reduce){
  html{scroll-behavior:auto}
- .museum-page-arriving,.museum-motion-ready dialog[open],.museum-motion-ready dialog[open]::backdrop,.museum-motion-ready dialog.museum-dialog-leaving::backdrop,.museum-motion-ready .request-dialog.is-closing::backdrop{animation:none!important}
- .museum-motion-ready button,.museum-motion-ready a,.museum-motion-ready .artwork-card img{transition:none}
+ .museum-page-arriving{animation:museum-page-arrive .4s ease!important}
+ .museum-motion-ready dialog[open]:not(.collection-choice){animation:museum-dialog-arrive .4s ease!important}
+ .museum-motion-ready dialog[open]:not(.collection-choice)::backdrop{animation:museum-backdrop-arrive .4s ease!important}
+ .museum-motion-ready dialog.museum-dialog-leaving::backdrop,.museum-motion-ready .request-dialog.is-closing::backdrop{animation:museum-backdrop-leave .35s ease forwards!important}
+ .museum-motion-ready button,.museum-motion-ready a{transition:color .35s ease,background-color .35s ease,border-color .35s ease,opacity .35s ease}
+ .museum-motion-ready .artwork-card img{transition:filter .35s ease}
 }

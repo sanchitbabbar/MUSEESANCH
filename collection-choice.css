@@ -212,3 +212,9 @@
 }
 
 @media(prefers-reduced-motion:reduce){.collection-view-arriving{animation:none!important}}
+
+/* Low-motion visitors retain the same quiet dissolve, without translation or scale. */
+@media(prefers-reduced-motion:reduce){
+ .collection-view-arriving{animation:collection-visible-arrival .4s ease!important}
+ .collection-revealing #collection,.collection-revealing #artwork-grid{animation:museum-veil-arrive .4s ease!important}
+}
