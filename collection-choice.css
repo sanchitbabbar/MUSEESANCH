@@ -218,3 +218,8 @@
  .collection-view-arriving{animation:collection-visible-arrival .4s ease!important}
  .collection-revealing #collection,.collection-revealing #artwork-grid{animation:museum-veil-arrive .4s ease!important}
 }
+
+/* Desktop original enquiries use their existing labels once, above each field. */
+@media(min-width:701px){
+ .choice-form-view label input::placeholder,.choice-form-view label textarea::placeholder{color:transparent;opacity:0}
+}
