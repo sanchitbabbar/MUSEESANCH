@@ -44,3 +44,8 @@ html{scroll-behavior:smooth}
 @media(prefers-reduced-motion:no-preference){
  .prologue-copy,.prologue-art{transition:transform 1.4s cubic-bezier(.22,1,.36,1),opacity 1.4s ease;}
 }
+
+/* Reserve space for the desktop scroll cue below the introduction. */
+@media(min-width:701px){
+ .prologue-stage{box-sizing:border-box;padding-bottom:120px;}
+}
