@@ -139,7 +139,15 @@ form.addEventListener('submit',async event=>{event.preventDefault();if(pending||
 // The collection curtain is in the document from the beginning: no observer,
 // scroll lock, top-layer swap, or second scroll container at its threshold.
 function maybeOpen(){}
-shown=true;dialog.show();
+shown=true;
+// Opening the lower collection dialog must not pull desktop entry past the introduction.
+const entryScroll=matchMedia('(min-width:701px)').matches?{left:scrollX,top:scrollY}:null;
+dialog.show();
+if(entryScroll){
+ const root=document.documentElement,previousScroll=root.style.scrollBehavior;
+ root.style.scrollBehavior='auto';
+ try{scrollTo({...entryScroll,behavior:'auto'});}finally{root.style.scrollBehavior=previousScroll;}
+}
 new MutationObserver(()=>{translate();syncOriginalAddress();requestAnimationFrame(maybeOpen);}).observe(document.documentElement,{attributes:true,attributeFilter:['lang']});
 translate();
 const requestedOriginal=originalSlugs.indexOf(new URLSearchParams(location.search).get('original'));if(requestedOriginal>=0){work=acquisitionWorks[requestedOriginal];applyView('original');dissolveIn();requestAnimationFrame(()=>entryStage.scrollIntoView({behavior:'auto'}));}
