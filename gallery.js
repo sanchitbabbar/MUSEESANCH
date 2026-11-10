@@ -22,6 +22,10 @@ for (const [index, work] of designs.entries()) {
   document.getElementById('detail-sizes').textContent=work.sizes.map(size=>size.dimensions).join(' · ');
   document.getElementById('frame-toggle').setAttribute('aria-pressed','false');
   dialog.showModal(); document.body.style.overflow='hidden';
+  // Opening an artwork must start at its heading, not at the image controls or a previous scroll position.
+  document.getElementById('close-detail').focus({preventScroll:true});
+  dialog.scrollTop=0;
+  dialog.querySelector('.detail-copy').scrollTop=0;
  });
 }
 let closingArtworkDetail=false;
