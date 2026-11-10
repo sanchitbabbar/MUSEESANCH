@@ -47,3 +47,21 @@ footer .footer-logo{color:#eee}
 button:focus-visible,a:focus-visible{outline:none;box-shadow:none;text-decoration:none;color:#fff}
 header .back{border:0;border-radius:0;box-shadow:none;background:transparent;padding:8px;color:#ffffff80}
 header .back:focus,header .back:focus-visible{outline:none;box-shadow:none;text-decoration:none}
+
+/* On desktop, keep the artwork still and scroll only its accompanying text. */
+@media(min-width:601px){
+ #artwork-detail{overflow:hidden;}
+ #artwork-detail .detail-layout{height:calc(90dvh - 2px);min-height:0;}
+ #artwork-detail .image-panel{align-self:start;height:100%;min-height:0;justify-content:flex-start;}
+ #artwork-detail .image-panel img{max-height:min(65dvh,calc(90dvh - 110px));}
+ #artwork-detail .detail-copy{height:100%;min-height:0;overflow-y:auto;overscroll-behavior:contain;}
+}
+
+/* A quiet close control at the upper edge of the mobile artwork viewer. */
+@media(max-width:600px){
+ #artwork-detail .detail-copy{position:static;}
+ #artwork-detail #close-detail{top:8px;right:8px;width:44px;height:44px;padding:0;font-size:0;color:rgba(255,255,255,.65);z-index:3;}
+ #artwork-detail #close-detail::before,#artwork-detail #close-detail::after{content:"";position:absolute;top:50%;left:50%;width:15px;height:1px;background:currentColor;transform:translate(-50%,-50%) rotate(45deg);}
+ #artwork-detail #close-detail::after{transform:translate(-50%,-50%) rotate(-45deg);}
+ #artwork-detail #close-detail:hover,#artwork-detail #close-detail:focus-visible{color:#fff;}
+}
