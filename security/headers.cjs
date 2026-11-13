@@ -10,7 +10,7 @@ module.exports = {
     "default-src 'none'", "base-uri 'none'", "object-src 'none'", "frame-ancestors 'none'",
     "script-src 'self' " + hashes.join(' '), "script-src-attr 'none'",
     "style-src 'self' 'unsafe-inline' https://fonts.googleapis.com",
-    "font-src 'self' https://fonts.gstatic.com", "img-src 'self' data:",
+    "font-src 'self' https://fonts.gstatic.com", "img-src 'self' data:", "media-src 'self'",
     "connect-src 'self' https://formspree.io", "form-action https://formspree.io/f/mrpgkojw"
   ].join('; '),
   'X-Content-Type-Options': 'nosniff',

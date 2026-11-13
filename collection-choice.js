@@ -37,6 +37,51 @@ dialog.innerHTML=`<div class="choice-atmosphere" aria-hidden="true"><div class="
 const sheet=document.createElement('div');sheet.className='choice-sheet';
 [...dialog.children].filter(element=>!element.classList.contains('choice-atmosphere')).forEach(element=>sheet.append(element));
 dialog.append(sheet);
+const printNotice=document.createElement('section');
+printNotice.className='choice-print-notice';
+printNotice.hidden=true;
+printNotice.innerHTML=`
+ <div class="choice-framing-preview"><video muted loop playsinline preload="none"></video></div>
+ <div class="choice-print-copy">
+  <h2></h2>
+  <p></p>
+  <p class="choice-print-note"></p>
+  <button type="button" class="choice-print-continue"><span></span><span aria-hidden="true">→</span></button>
+ </div>`;
+const printClose=document.createElement('button');
+printClose.type='button';
+printClose.className='choice-close';
+printClose.textContent='×';
+printClose.hidden=true;
+printClose.onclick=()=>showView('choices');
+sheet.append(printClose,printNotice);
+const framingVideo=printNotice.querySelector('video');
+const printContinue=printNotice.querySelector('.choice-print-continue');
+const printCopy={
+ fr:{title:'Œuvres d’art',paper:"Chaque tirage est réalisé sur papier d'archives de qualité musée, garantissant une longévité exceptionnelle et la préservation des couleurs.",note:"Les œuvres sont vendues sans cadre. Un encadrement professionnel d'archives est recommandé pour une conservation et une mise en valeur optimales.",continue:'Voir la Collection',video:'Encadrement d’une édition d’art'},
+ en:{title:'Artworks',paper:'Each print is produced on museum-grade archival paper, ensuring exceptional longevity and color preservation.',note:'Note: Prints are sold unframed. Professional archival framing is recommended for optimal preservation and display.',continue:'View Collection',video:'Framing a fine art edition'}
+};
+function translatePrintNotice(){
+ const c=printCopy[lang()];
+ printClose.setAttribute('aria-label',copy[lang()].close);
+ printNotice.querySelector('h2').textContent=c.title;
+ printNotice.querySelector('p').textContent=c.paper;
+ printNotice.querySelector('.choice-print-note').textContent=c.note;
+ printContinue.firstElementChild.textContent=c.continue;
+ framingVideo.setAttribute('aria-label',c.video);
+}
+function showFramingVideo(){
+ if(!framingVideo.firstElementChild){
+  for(const format of ['webm','mp4']){
+   const source=document.createElement('source');
+   source.src='./images/art-prints/encadrement-preview.'+format;
+   source.type='video/'+format;
+   framingVideo.append(source);
+  }
+ }
+ framingVideo.muted=true;
+ void framingVideo.play().catch(()=>{});
+}
 const collectionFooter=document.querySelector('body > footer').cloneNode(true);
 collectionFooter.classList.add('choice-footer');
 collectionFooter.querySelector('.musee-cookie-reopen')?.addEventListener('click',()=>{const banner=document.querySelector('.musee-cookie-banner');if(banner)dialog.append(banner);document.querySelector('body > footer .musee-cookie-reopen')?.click();});
@@ -65,7 +110,7 @@ let returningIntro=false;
 let view='choices',shown=false,pending=false,sent=false,failed=false,previousOverflow='',returnFocus;
 const lang=()=>document.documentElement.lang==='en'?'en':'fr';
 const copy={fr:{back:'← Retour',close:'Fermer',label:'Choisir une collection',editions:'Éditions d’Art',originals:'Œuvres Originales',auction:'Acquisition · Œuvre originale',interest:'Exprimer mon intérêt',name:'Nom complet',email:'Adresse e-mail',message:'Votre intérêt et votre proposition',submit:'ENVOYER MA DEMANDE',sending:'ENVOI…',defaultMessage:'Je souhaite manifester mon intérêt pour l’acquisition de « Celle qui se connaît » et vous soumettre la proposition suivante : [montant] EUR.',privacy:'Vos coordonnées sont transmises via Formspree pour répondre à votre demande.',policy:'Confidentialité',success:'Votre message a bien été envoyé. Nous vous recontacterons au sujet de votre proposition d’acquisition.',error:'Votre demande n’a pas pu être confirmée. Veuillez réessayer.'},en:{back:'← Back',close:'Close',label:'Choose a collection',editions:'Fine Art Editions',originals:'Originals',auction:'Acquisition · Original artwork',interest:'Express interest',name:'Full Name',email:'Email Address',message:'Your interest and proposed offer',submit:'PLACE YOUR REQUEST',sending:'SENDING…',defaultMessage:'I wish to express my interest in acquiring “Celle qui se connaît” and submit the following offer for your consideration: EUR [amount].',privacy:'Your details are sent through Formspree so we can respond to your enquiry.',policy:'Privacy',success:'Message sent successfully. We will be in touch regarding your acquisition proposal.',error:'Your request could not be confirmed. Please try again.'}};
-function translate(){const c=copy[lang()];moreOriginals.setAttribute('aria-label',lang()==='fr'?'Voir les autres œuvres originales':'View more original artworks');invitationList.setAttribute('aria-label',lang()==='fr'?'Œuvres originales disponibles':'Available original artworks');
+function translate(){translatePrintNotice();const c=copy[lang()];moreOriginals.setAttribute('aria-label',lang()==='fr'?'Voir les autres œuvres originales':'View more original artworks');invitationList.setAttribute('aria-label',lang()==='fr'?'Œuvres originales disponibles':'Available original artworks');
 collectionFooter.querySelector('.mda-stamp + p').replaceChildren(document.createTextNode('ⓒ 2026 SANCHIT BABBAR'),document.createElement('br'),document.createTextNode(lang()==='fr'?'TOUS DROITS RÉSERVÉS.':'ALL RIGHTS RESERVED.'));
 collectionFooter.querySelectorAll('nav a').forEach((link,i)=>{link.href='./'+['privacy-policy','terms','legal-notice'][i]+(lang()==='en'?'-en':'')+'.html';link.textContent=(lang()==='fr'?['CONFIDENTIALITÉ','CONDITIONS','MENTIONS LÉGALES']:['PRIVACY','TERMS','LEGAL NOTICE'])[i];});
 preview.querySelectorAll('.choice-attend').forEach((button,index)=>{button.querySelector('[data-upcoming]').hidden=true;button.querySelector('.choice-preview-title').textContent=acquisitionWorks[index].title;button.querySelector('[data-attend]').textContent=lang()==='fr'?'Se renseigner':'Enquire';});original.querySelector('img').src=work.title==='La première onde'?'./images/auctions/la-premiere-onde-original.webp':work.title==='Murmure des Pétales'?'./images/auctions/murmure-des-petales-original.webp?v=f8351c417791':work.title==='Instar'?'./images/auctions/instar-original.webp':work.title==='Deepa'?'./images/auctions/deepa-original.webp':'./images/auctions/celle-qui-se-connait-original.webp';original.querySelector('img').alt=work.title;formView.querySelector('h2').textContent=work.title;dialog.setAttribute('aria-label',c.label);dialog.querySelector('.choice-scroll-up').hidden=view!=='choices';dialog.querySelector('.choice-scroll-up').setAttribute('aria-label',lang()==='fr'?'Remonter vers l’introduction':'Scroll up to the introduction');collectionHeader.querySelector('.back').setAttribute('aria-label',lang()==='fr'?'Retour aux collections':'Back to collections');dialog.querySelector('.choice-back').textContent=c.back;dialog.querySelector('.choice-back').hidden=view==='choices';dialog.querySelector('[data-editions]').textContent=c.editions;dialog.querySelector('[data-originals]').textContent=c.originals;dialog.querySelectorAll('.choice-auction-label').forEach(el=>el.textContent=c.auction);original.querySelector('h2').textContent=work.title;original.querySelector('.choice-year').textContent=work.year;original.querySelector('[data-medium]').textContent=(lang()==='fr'?'Encre sur papier':'Ink on paper')+(work.dimensions?' · '+work.dimensions:'');original.querySelector('.choice-provenance').textContent=lang()==='fr'?'Créée à la main à Montmartre, Paris.':'Created by hand in Montmartre, Paris.';original.querySelector('.choice-proposal').textContent=(lang()==='fr'?'Proposition — à partir de ':'Proposal — from ')+(work.minimumProposal||1000000).toLocaleString(lang()==='fr'?'fr-FR':'en-GB')+' EUR';original.querySelector('.choice-poetry').textContent=lang()==='fr'?work.descriptionFr:work.descriptionEn;dialog.querySelector('.choice-interest').textContent=c.interest;for(const key of ['name','email','message']){dialog.querySelector('[data-label="'+key+'"]').textContent=c[key];form.elements[key].placeholder=c[key];}submit.textContent=pending?c.sending:c.submit;status.textContent=sent?c.success:failed?c.error:'';const privacy=dialog.querySelector('.choice-privacy');privacy.replaceChildren(document.createTextNode(c.privacy+' '));const link=document.createElement('a');link.href=lang()==='fr'?'./privacy-policy.html':'./privacy-policy-en.html';link.textContent=c.policy;privacy.append(link);}
@@ -77,6 +122,9 @@ if('requestIdleCallback' in window)window.requestIdleCallback(warmOriginals,{tim
 let changingView=false;
 function applyView(next){
  view=next;syncOriginalAddress();dialog.dataset.view=next;
+ printClose.hidden=printNotice.hidden=next!=='prints';
+ if(next==='prints')showFramingVideo();
+ else if(framingVideo.firstElementChild)framingVideo.pause();
  options.hidden=next!=='choices';preview.hidden=next!=='preview';original.hidden=next!=='original';formView.hidden=next!=='form';
  translate();requestAnimationFrame(updateOriginalsHint);
 }
@@ -100,18 +148,19 @@ function showView(next){
  release();
 }
 async function revealEditions(){
- const editions=dialog.querySelector('[data-editions]');if(editions.disabled||changingView)return;editions.disabled=true;changingView=true;sheet.inert=true;
+ if(view!=='prints'||changingView)return;printContinue.disabled=true;changingView=true;sheet.inert=true;
  let clear=()=>{};
  try{
   clear=await curtain(sheet,reducedMotion()?[{opacity:1},{opacity:0}]:[{opacity:1,transform:'translateY(0)'},{opacity:0,transform:'translateY(-35px)'}],{duration:550,easing:'cubic-bezier(.45,0,.55,1)'});
   document.documentElement.classList.remove('collection-pending');document.documentElement.classList.add('collection-revealing');
-  entryStage.hidden=true;cancelGlide();
+  framingVideo.pause();entryStage.hidden=true;cancelGlide();
   const root=document.documentElement,previousScroll=root.style.scrollBehavior;root.style.scrollBehavior='auto';
   try{scrollTo({top:scrollY+collectionHeader.getBoundingClientRect().top,behavior:'auto'});}finally{root.style.scrollBehavior=previousScroll;}
   dialog.close();document.getElementById('works-tab').focus({preventScroll:true});
- }finally{clear();sheet.inert=false;editions.disabled=false;changingView=false;}
+ }finally{clear();sheet.inert=false;printContinue.disabled=false;changingView=false;}
 }
-dialog.querySelector('[data-editions]').onclick=revealEditions;
+dialog.querySelector('[data-editions]').onclick=()=>showView('prints');
+printContinue.onclick=revealEditions;
 function returnToIntro(){
  if(view!=='choices')return;
  glideTo(document.querySelector('.collection-prologue'));
