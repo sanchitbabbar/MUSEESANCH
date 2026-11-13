@@ -41,12 +41,12 @@ const printNotice=document.createElement('section');
 printNotice.className='choice-print-notice';
 printNotice.hidden=true;
 printNotice.innerHTML=`
- <div class="choice-framing-preview"><video muted loop playsinline preload="none"></video></div>
+ <div class="choice-framing-preview"><video muted loop playsinline preload="auto"></video></div>
  <div class="choice-print-copy">
   <h2></h2>
   <p></p>
   <p class="choice-print-note"></p>
-  <button type="button" class="choice-print-continue"><span></span><span aria-hidden="true">→</span></button>
+  <button type="button" class="choice-print-continue"></button>
  </div>`;
 const printClose=document.createElement('button');
 printClose.type='button';
@@ -67,18 +67,21 @@ function translatePrintNotice(){
  printNotice.querySelector('h2').textContent=c.title;
  printNotice.querySelector('p').textContent=c.paper;
  printNotice.querySelector('.choice-print-note').textContent=c.note;
- printContinue.firstElementChild.textContent=c.continue;
+ printContinue.textContent=c.continue;
  framingVideo.setAttribute('aria-label',c.video);
 }
-function showFramingVideo(){
- if(!framingVideo.firstElementChild){
-  for(const format of ['webm','mp4']){
-   const source=document.createElement('source');
-   source.src='./images/art-prints/encadrement-preview.'+format;
-   source.type='video/'+format;
-   framingVideo.append(source);
-  }
+function preloadFramingVideo(){
+ if(framingVideo.firstElementChild)return;
+ for(const format of ['webm','mp4']){
+  const source=document.createElement('source');
+  source.src='./images/art-prints/encadrement-preview.'+format;
+  source.type='video/'+format;
+  framingVideo.append(source);
  }
+ framingVideo.load();
+}
+function showFramingVideo(){
+ preloadFramingVideo();
  framingVideo.muted=true;
  void framingVideo.play().catch(()=>{});
 }
@@ -159,7 +162,14 @@ async function revealEditions(){
   dialog.close();document.getElementById('works-tab').focus({preventScroll:true});
  }finally{clear();sheet.inert=false;printContinue.disabled=false;changingView=false;}
 }
-dialog.querySelector('[data-editions]').onclick=()=>showView('prints');
+const editionsButton=dialog.querySelector('[data-editions]');
+const framingPreloadObserver=new IntersectionObserver(entries=>{
+ if(!entries.some(entry=>entry.isIntersecting))return;
+ preloadFramingVideo();
+ framingPreloadObserver.disconnect();
+},{rootMargin:'300px'});
+framingPreloadObserver.observe(editionsButton);
+editionsButton.onclick=()=>showView('prints');
 printContinue.onclick=revealEditions;
 function returnToIntro(){
  if(view!=='choices')return;
